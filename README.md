@@ -53,7 +53,7 @@
 环境要求：JDK 17+、Android SDK（compileSdk 35）
 
 ```bash
-git clone https://github.com/<你的用户名>/StarLedger.git
+git clone https://github.com/JinsidaXX/StarLedger.git
 cd StarLedger
 ./gradlew assembleDebug
 ```
