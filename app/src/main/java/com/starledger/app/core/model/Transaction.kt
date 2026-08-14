@@ -1,5 +1,7 @@
 package com.starledger.app.core.model
 
+import com.starledger.app.R
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -22,10 +24,10 @@ data class Transaction(
     val updatedAt: Long = System.currentTimeMillis(),
 )
 
-enum class TxType(val label: String) {
-    EXPENSE("支出"),
-    INCOME("收入"),
-    TRANSFER("转账"),
-    REFUND("退款"),
-    REIMBURSEMENT("报销"),
+enum class TxType(@androidx.annotation.StringRes val labelResId: Int) {
+    EXPENSE(R.string.tx_type_expense),
+    INCOME(R.string.tx_type_income),
+    TRANSFER(R.string.tx_type_transfer),
+    REFUND(R.string.tx_type_refund),
+    REIMBURSEMENT(R.string.tx_type_reimbursement),
 }

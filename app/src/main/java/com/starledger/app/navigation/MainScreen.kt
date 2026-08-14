@@ -35,7 +35,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.starledger.app.R
 import com.starledger.app.core.design.theme.AccentBlue
 import com.starledger.app.core.design.theme.SpaceBackground
 import com.starledger.app.core.design.theme.StarPurple
@@ -48,19 +50,19 @@ import com.starledger.app.feature.planning.PlanningScreen
 import com.starledger.app.feature.starmap.StarmapScreen
 
 private data class TabItem(
-    val label: String,
+    @androidx.annotation.StringRes val labelResId: Int,
     val icon: ImageVector,
     val index: Int,
 )
 
 private val leftTabs = listOf(
-    TabItem("本期", Icons.Filled.Home, 0),
-    TabItem("账本", Icons.Filled.List, 1),
+    TabItem(R.string.tab_current, Icons.Filled.Home, 0),
+    TabItem(R.string.tab_ledger, Icons.Filled.List, 1),
 )
 
 private val rightTabs = listOf(
-    TabItem("规划", Icons.Filled.DateRange, 2),
-    TabItem("星图", Icons.Filled.Star, 3),
+    TabItem(R.string.tab_planning, Icons.Filled.DateRange, 2),
+    TabItem(R.string.tab_starmap, Icons.Filled.Star, 3),
 )
 
 @Composable
@@ -164,7 +166,7 @@ private fun BottomBar(
             ) {
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = "记一笔",
+                    contentDescription = stringResource(R.string.add_transaction),
                     tint = Color(0xFF070A12),
                     modifier = Modifier.size(28.dp),
                 )
@@ -201,9 +203,9 @@ private fun TabButton(
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(tab.icon, contentDescription = tab.label, tint = color, modifier = Modifier.size(22.dp))
+        Icon(tab.icon, contentDescription = stringResource(tab.labelResId), tint = color, modifier = Modifier.size(22.dp))
         Text(
-            tab.label,
+            stringResource(tab.labelResId),
             style = MaterialTheme.typography.labelSmall,
             color = if (selected) TextPrimary else TextSecondary,
         )

@@ -89,7 +89,7 @@ class BackupManager @Inject constructor(
     suspend fun importJson(json: String): Int {
         val root = JSONObject(json)
         if (root.optString("app") != "StarLedger") {
-            throw IllegalArgumentException("不是星图账本的备份文件")
+            throw IllegalArgumentException(if (isZh()) "不是星图账本的备份文件" else "Not a StarLedger backup file")
         }
         var count = 0
 
@@ -131,10 +131,10 @@ class BackupManager @Inject constructor(
 
     suspend fun exportCsv(): String {
         val sb = StringBuilder()
-        sb.append("类型,日期,金额(元),账户,转入账户,分类,商户,备注\n")
+        sb.append(if (isZh()) "类型,日期,金额(元),账户,转入账户,分类,商户,备注\n" else "Type,Date,Amount,Account,To Account,Category,Merchant,Note\n")
         transactionDao.getAll().sortedBy { it.date }.forEach { tx ->
             val yuan = tx.amount / 100.0
-            sb.append(tx.type.label).append(',')
+            sb.append(tx.type.name).append(',')
             sb.append(tx.date).append(',')
             sb.append(String.format("%.2f", yuan)).append(',')
             sb.append(tx.accountId).append(',')
@@ -152,6 +152,8 @@ class BackupManager @Inject constructor(
         }
         return s
     }
+
+    private fun isZh(): Boolean = java.util.Locale.getDefault().language == "zh"
 
     // ---------- JSON 序列化 ----------
 

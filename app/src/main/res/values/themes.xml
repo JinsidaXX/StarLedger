@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.StarLedger" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.StarLedger" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/space_background</item>
         <item name="android:statusBarColor">@color/space_background</item>
         <item name="android:navigationBarColor">@color/space_background</item>

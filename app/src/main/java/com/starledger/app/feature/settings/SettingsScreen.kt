@@ -3,6 +3,8 @@ package com.starledger.app.feature.settings
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,8 +34,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.ScreenScaffold
@@ -57,6 +61,7 @@ fun SettingsScreen(
     val scope = rememberCoroutineScope()
 
     var showImportConfirm by remember { mutableStateOf<String?>(null) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     val exportJsonLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -107,7 +112,7 @@ fun SettingsScreen(
         state.message?.let { viewModel.clearMessage() }
     }
 
-    ScreenScaffold(title = "设置", onBack = onBack) {
+    ScreenScaffold(title = stringResource(R.string.settings_title), onBack = onBack) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
@@ -117,7 +122,7 @@ fun SettingsScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("大额消费冷静期", style = MaterialTheme.typography.titleSmall, color = TextPrimary)
+                        Text(stringResource(R.string.settings_cooling), style = MaterialTheme.typography.titleSmall, color = TextPrimary)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             listOf(0, 7, 14, 30).forEach { days ->
                                 val selected = state.coolingDays == days
@@ -129,7 +134,7 @@ fun SettingsScreen(
                                         .padding(horizontal = 14.dp, vertical = 8.dp),
                                 ) {
                                     Text(
-                                        if (days == 0) "关闭" else "$days 天",
+                                        if (days == 0) stringResource(R.string.plan_cooling_off) else stringResource(R.string.plan_cooling_days, days),
                                         style = MaterialTheme.typography.labelMedium,
                                         color = if (selected) AccentBlue else TextSecondary,
                                     )
@@ -141,14 +146,27 @@ fun SettingsScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Column(Modifier.weight(1f)) {
-                                Text("首页显示每日可用金额", style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
-                                Text("仅作参考，不打分", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(stringResource(R.string.settings_daily_amount), style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
+                                Text(stringResource(R.string.settings_daily_hint), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                             }
                             Switch(
                                 checked = state.showDailyAmount,
                                 onCheckedChange = { viewModel.setShowDailyAmount(it) },
                                 colors = SwitchDefaults.colors(checkedTrackColor = AccentBlue),
                             )
+                        }
+                        // 语言选择
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(Modifier.weight(1f)) {
+                                Text(stringResource(R.string.settings_language), style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
+                                Text(languageLabel(state.language), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                            }
+                            TextButton(onClick = { showLanguageDialog = true }) {
+                                Text(stringResource(R.string.edit), color = AccentBlue)
+                            }
                         }
                     }
                 }
@@ -158,14 +176,14 @@ fun SettingsScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("备份与恢复", style = MaterialTheme.typography.titleSmall, color = TextPrimary)
-                        SettingRow("导出 JSON 备份（全部数据）") {
+                        Text(stringResource(R.string.settings_backup), style = MaterialTheme.typography.titleSmall, color = TextPrimary)
+                        SettingRow(stringResource(R.string.settings_export_json)) {
                             exportJsonLauncher.launch("StarLedger-backup-${LocalDate.now()}.json")
                         }
-                        SettingRow("导入 JSON 备份（覆盖当前数据）", danger = true) {
+                        SettingRow(stringResource(R.string.settings_import_json), danger = true) {
                             importLauncher.launch(arrayOf("application/json", "text/plain", "*/*"))
                         }
-                        SettingRow("导出 CSV 账单") {
+                        SettingRow(stringResource(R.string.settings_export_csv)) {
                             exportCsvLauncher.launch("StarLedger-${LocalDate.now()}.csv")
                         }
                     }
@@ -176,12 +194,9 @@ fun SettingsScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("数据与隐私", style = MaterialTheme.typography.titleSmall, color = TextPrimary)
+                        Text(stringResource(R.string.settings_privacy), style = MaterialTheme.typography.titleSmall, color = TextPrimary)
                         Text(
-                            "· 所有数据只保存在手机本地\n" +
-                                "· 无需登录、无需联网\n" +
-                                "· 不上传账单、不收集消费行为\n" +
-                                "· 无广告、无付费功能",
+                            stringResource(R.string.settings_privacy_desc),
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary,
                         )
@@ -193,10 +208,10 @@ fun SettingsScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("关于", style = MaterialTheme.typography.titleSmall, color = TextPrimary)
-                        Text("星图账本 StarLedger v0.1.0", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+                        Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleSmall, color = TextPrimary)
+                        Text("${stringResource(R.string.app_name)} v0.1.0", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                         Text(
-                            "让每一笔收支，都有自己的轨道。\n免费 · 开源 · GPL-3.0-or-later",
+                            "${stringResource(R.string.onboarding_slogan)}\n${stringResource(R.string.onboarding_license)}",
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary,
                         )
@@ -211,10 +226,10 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { showImportConfirm = null },
             containerColor = SpaceBackground,
-            title = { Text("确认导入", color = TextPrimary) },
+            title = { Text(stringResource(R.string.settings_import_confirm_title), color = TextPrimary) },
             text = {
                 Text(
-                    "导入将覆盖当前全部数据，建议先导出一份备份。是否继续？",
+                    stringResource(R.string.settings_import_confirm),
                     color = TextPrimary,
                 )
             },
@@ -222,10 +237,47 @@ fun SettingsScreen(
                 TextButton(onClick = {
                     viewModel.importJson(content)
                     showImportConfirm = null
-                }) { Text("导入", color = RiskRed) }
+                }) { Text(stringResource(R.string.settings_import), color = RiskRed) }
             },
             dismissButton = {
-                TextButton(onClick = { showImportConfirm = null }) { Text("取消", color = TextSecondary) }
+                TextButton(onClick = { showImportConfirm = null }) { Text(stringResource(R.string.cancel), color = TextSecondary) }
+            },
+        )
+    }
+
+    if (showLanguageDialog) {
+        AlertDialog(
+            onDismissRequest = { showLanguageDialog = false },
+            containerColor = SpaceBackground,
+            title = { Text(stringResource(R.string.settings_language), color = TextPrimary) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf("system", "zh", "en").forEach { lang ->
+                        val selected = state.language == lang
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (selected) AccentBlue.copy(alpha = 0.2f) else SurfaceSecondary)
+                                .clickable {
+                                    viewModel.setLanguage(lang)
+                                    showLanguageDialog = false
+                                    com.starledger.app.di.applyAppLanguage(context)
+                                    (context as? android.app.Activity)?.recreate()
+                                }
+                                .padding(14.dp),
+                        ) {
+                            Text(
+                                languageLabel(lang),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (selected) AccentBlue else TextPrimary,
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguageDialog = false }) { Text(stringResource(R.string.cancel), color = TextSecondary) }
             },
         )
     }
@@ -253,4 +305,11 @@ private fun SettingRow(
         )
         Text("›", color = TextSecondary)
     }
+}
+
+@Composable
+private fun languageLabel(language: String): String = when (language) {
+    "zh" -> stringResource(R.string.language_zh)
+    "en" -> stringResource(R.string.language_en)
+    else -> stringResource(R.string.language_system)
 }

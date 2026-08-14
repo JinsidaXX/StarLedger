@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.MoneyText
@@ -63,12 +65,12 @@ fun StarDetailScreen(
     LaunchedEffect(cycleId) { viewModel.load(cycleId) }
 
     ScreenScaffold(
-        title = state.cycle?.name ?: "月度恒星",
+        title = state.cycle?.name ?: stringResource(R.string.star_detail_monthly_star),
         onBack = onBack,
     ) {
         if (state.loading || state.cycle == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("加载中…", color = TextSecondary)
+                Text(stringResource(R.string.loading), color = TextSecondary)
             }
             return@ScreenScaffold
         }
@@ -102,7 +104,10 @@ fun StarDetailScreen(
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
-                            "恒星状态：${state.star?.colorState?.label ?: "—"}",
+                            stringResource(
+                                R.string.star_status,
+                                stringResource(state.star?.colorState?.labelResId ?: R.string.star_state_fog),
+                            ),
                             style = MaterialTheme.typography.titleMedium,
                             color = stateColor(state.star?.colorState),
                         )
@@ -119,20 +124,20 @@ fun StarDetailScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        DataRow("本期收入", state.cycle?.totalIncome ?: 0)
-                        DataRow("支出", state.expense)
-                        DataRow("结余", state.surplus, color = if (state.surplus >= 0) PositiveGreen else RiskRed)
+                        DataRow(stringResource(R.string.home_title), state.cycle?.totalIncome ?: 0)
+                        DataRow(stringResource(R.string.home_expense), state.expense)
+                        DataRow(stringResource(R.string.review_surplus), state.surplus, color = if (state.surplus >= 0) PositiveGreen else RiskRed)
                         Spacer(Modifier.height(4.dp))
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Text("记账状态", style = MaterialTheme.typography.labelSmall, color = TextSecondary, modifier = Modifier.weight(1f))
+                            Text(stringResource(R.string.star_record_status), style = MaterialTheme.typography.labelSmall, color = TextSecondary, modifier = Modifier.weight(1f))
                             Text(
-                                if ((state.star?.observationCompleteness ?: 0f) >= 1f) "已记账" else "未记录",
+                                if ((state.star?.observationCompleteness ?: 0f) >= 1f) stringResource(R.string.star_recorded) else stringResource(R.string.star_not_recorded),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = if ((state.star?.observationCompleteness ?: 0f) >= 1f) PositiveGreen else RiskRed,
                             )
                         }
                         Spacer(Modifier.height(4.dp))
-                        Text("分配完成度", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                        Text(stringResource(R.string.star_alloc_completion), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                         SimpleProgress(
                             progress = state.star?.allocationCompletion ?: 0f,
                             color = PositiveGreen,
@@ -145,7 +150,7 @@ fun StarDetailScreen(
             if (state.envelopes.isNotEmpty()) {
                 item {
                     Text(
-                        "星芒 · 各分类预算",
+                        stringResource(R.string.star_rays),
                         style = MaterialTheme.typography.titleSmall,
                         color = TextSecondary,
                         modifier = Modifier.padding(start = 4.dp),
@@ -168,7 +173,7 @@ fun StarDetailScreen(
                             contentColor = SpaceBackground,
                         ),
                     ) {
-                        Text(if (state.cycle?.reviewCompleted == true) "已完成复盘 ✓" else "完成复盘")
+                        Text(if (state.cycle?.reviewCompleted == true) stringResource(R.string.star_review_done) else stringResource(R.string.star_complete_review))
                     }
                     Button(
                         onClick = { onReview(cycleId) },
@@ -179,13 +184,13 @@ fun StarDetailScreen(
                             contentColor = TextPrimary,
                         ),
                     ) {
-                        Text("复盘详情")
+                        Text(stringResource(R.string.star_review_detail))
                     }
                 }
             }
             item {
                 Text(
-                    if (state.cycle?.markedUnrecorded == true) "本周期已标记为未记录，点击恢复" else "这个月没有记录？可以标记为「未记录」",
+                    if (state.cycle?.markedUnrecorded == true) stringResource(R.string.star_mark_recorded) else stringResource(R.string.star_mark_unrecorded),
                     style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary,
                     modifier = Modifier
@@ -236,7 +241,7 @@ private fun RayDetailRow(env: com.starledger.app.core.model.BudgetEnvelope) {
             SimpleProgress(progress = ratio, color = color, height = 4)
             Spacer(Modifier.height(4.dp))
             Text(
-                "计划 ${Money.format(env.plannedAmount)} · 已用 ${Money.format(env.actualAmount)}",
+                stringResource(R.string.envelope_planned_used, Money.format(env.plannedAmount), Money.format(env.actualAmount)),
                 style = MaterialTheme.typography.labelSmall,
                 color = TextSecondary,
             )
@@ -244,14 +249,15 @@ private fun RayDetailRow(env: com.starledger.app.core.model.BudgetEnvelope) {
     }
 }
 
+@Composable
 private fun starDescription(state: StarDetailUiState): String {
     val star = state.star ?: return ""
     return when (star.colorState) {
-        StarColorState.BLUE -> "各分类大致符合计划，一切都在轨道上。"
-        StarColorState.WARM -> "有分类轻微超出计划，本期需要稍微留意。"
-        StarColorState.ORANGE -> "部分分类明显超出计划，可以考虑下个周期重新安排。"
-        StarColorState.RED -> "本期支出明显超过可用资金，建议先查看哪些分类需要关注。"
-        StarColorState.FOG -> "本月还没有记录，先记下第一笔账吧。"
+        StarColorState.BLUE -> stringResource(R.string.star_desc_blue)
+        StarColorState.WARM -> stringResource(R.string.star_desc_warm)
+        StarColorState.ORANGE -> stringResource(R.string.star_desc_orange)
+        StarColorState.RED -> stringResource(R.string.star_desc_red)
+        StarColorState.FOG -> stringResource(R.string.star_desc_fog)
     }
 }
 

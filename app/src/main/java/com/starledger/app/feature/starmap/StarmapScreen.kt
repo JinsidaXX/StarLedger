@@ -30,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.MoneyText
@@ -41,6 +43,7 @@ import com.starledger.app.core.design.theme.TextSecondary
 import com.starledger.app.core.model.Money
 import com.starledger.app.core.model.MonthlyStar
 import com.starledger.app.core.model.StarColorState
+import com.starledger.app.core.model.TimeUtil
 import com.starledger.app.core.starmap.StarCanvas
 import com.starledger.app.core.starmap.StarVisual
 
@@ -66,25 +69,25 @@ fun StarmapScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = { viewModel.previousYear() }) {
-                Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = "上一年", tint = TextSecondary)
+                Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.prev_month), tint = TextSecondary)
             }
             Column(
                 Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    "${state.year} 年度星座",
+                    stringResource(R.string.starmap_year_title, state.year),
                     style = MaterialTheme.typography.titleMedium,
                     color = TextPrimary,
                 )
                 Text(
-                    "收 ${Money.formatWithSymbol(state.yearIncome)} · 支 ${Money.formatWithSymbol(state.yearExpense)}",
+                    "${stringResource(R.string.income_short)} ${Money.formatWithSymbol(state.yearIncome)} · ${stringResource(R.string.expense_short)} ${Money.formatWithSymbol(state.yearExpense)}",
                     style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary,
                 )
             }
             IconButton(onClick = { viewModel.nextYear() }) {
-                Icon(Icons.Filled.KeyboardArrowRight, contentDescription = "下一年", tint = TextSecondary)
+                Icon(Icons.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.next_month), tint = TextSecondary)
             }
         }
 
@@ -95,10 +98,10 @@ fun StarmapScreen(
                 .padding(horizontal = 20.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            LegendItem("计划内", StarColorState.BLUE)
-            LegendItem("轻微偏差", StarColorState.WARM)
-            LegendItem("超支", StarColorState.RED)
-            LegendItem("未记录", StarColorState.FOG)
+            LegendItem(stringResource(R.string.starmap_legend_on_plan), StarColorState.BLUE)
+            LegendItem(stringResource(R.string.starmap_legend_slight), StarColorState.WARM)
+            LegendItem(stringResource(R.string.starmap_legend_over), StarColorState.RED)
+            LegendItem(stringResource(R.string.starmap_legend_unrecorded), StarColorState.FOG)
         }
 
         LazyVerticalGrid(
@@ -164,15 +167,15 @@ private fun MonthStarCell(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "${month}月",
+                TimeUtil.monthLabel(month),
                 style = MaterialTheme.typography.labelMedium,
                 color = TextPrimary,
             )
             Text(
                 when {
-                    star == null -> "未记录"
-                    star.colorState == StarColorState.FOG -> "未记录"
-                    else -> "${star.colorState.label}"
+                    star == null -> stringResource(R.string.starmap_legend_unrecorded)
+                    star.colorState == StarColorState.FOG -> stringResource(R.string.starmap_legend_unrecorded)
+                    else -> stringResource(star.colorState.labelResId)
                 },
                 style = MaterialTheme.typography.labelSmall,
                 color = TextSecondary,

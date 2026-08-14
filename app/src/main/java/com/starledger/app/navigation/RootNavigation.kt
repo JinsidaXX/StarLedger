@@ -10,8 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
@@ -19,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.starledger.app.R
 import com.starledger.app.core.design.components.CircleIcon
 import com.starledger.app.core.starmap.StarCanvas
 import com.starledger.app.core.starmap.StarVisual
@@ -28,6 +33,7 @@ import com.starledger.app.feature.ledger.AccountsScreen
 import com.starledger.app.feature.ledger.CategoriesScreen
 import com.starledger.app.feature.ledger.LedgerScreen
 import com.starledger.app.feature.ledger.TransactionEditScreen
+import com.starledger.app.feature.onboarding.LanguageScreen
 import com.starledger.app.feature.onboarding.OnboardingScreen
 import com.starledger.app.feature.planning.OwnedItemsScreen
 import com.starledger.app.feature.planning.PlanDetailScreen
@@ -44,15 +50,30 @@ fun RootNavigation() {
     val mainViewModel: MainViewModel = hiltViewModel()
     val ready by mainViewModel.ready.collectAsStateWithLifecycle()
     val onboardingDone by mainViewModel.onboardingDone.collectAsStateWithLifecycle()
+    val language by mainViewModel.language.collectAsStateWithLifecycle()
 
     if (!ready) {
         SplashScreen()
         return
     }
 
-    val startDestination = if (onboardingDone) Routes.MAIN else Routes.ONBOARDING
+    val startDestination = when {
+        onboardingDone -> Routes.MAIN
+        language == "system" -> Routes.LANGUAGE
+        else -> Routes.ONBOARDING
+    }
 
     NavHost(navController = navController, startDestination = startDestination) {
+        composable(Routes.LANGUAGE) {
+            val context = LocalContext.current
+            LanguageScreen(
+                onSelected = { lang ->
+                    mainViewModel.applyLanguage(lang)
+                    com.starledger.app.di.applyAppLanguage(context)
+                    (context as? android.app.Activity)?.recreate()
+                }
+            )
+        }
         composable(Routes.ONBOARDING) {
             OnboardingScreen(
                 onDone = {
@@ -182,8 +203,8 @@ private fun SplashScreen() {
                     modifier = Modifier.size(120.dp),
                 )
             }
-            Text("星图账本", style = MaterialTheme.typography.titleLarge)
-            Text("让每一笔收支，都有自己的轨道", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.onboarding_slogan), style = MaterialTheme.typography.bodySmall)
         }
     }
 }

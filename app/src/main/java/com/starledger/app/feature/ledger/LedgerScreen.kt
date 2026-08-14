@@ -36,6 +36,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.CircleIcon
@@ -52,7 +54,6 @@ import com.starledger.app.core.design.theme.TextSecondary
 import com.starledger.app.core.model.Money
 import com.starledger.app.core.model.TimeUtil
 import com.starledger.app.core.model.TxType
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun LedgerScreen(
@@ -77,33 +78,33 @@ fun LedgerScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = { viewModel.previousMonth() }) {
-                Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = "上个月", tint = TextSecondary)
+                Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.prev_month), tint = TextSecondary)
             }
             Column(
                 Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    state.month.format(DateTimeFormatter.ofPattern("yyyy年M月")),
+                    TimeUtil.monthName(state.month.year, state.month.monthValue),
                     style = MaterialTheme.typography.titleMedium,
                     color = TextPrimary,
                 )
                 Row {
                     Text(
-                        "收 ${Money.formatWithSymbol(state.income)}",
+                        "${stringResource(R.string.income_short)} ${Money.formatWithSymbol(state.income)}",
                         style = MaterialTheme.typography.labelSmall,
                         color = RiskRed,
                     )
                     Text("  ", style = MaterialTheme.typography.labelSmall)
                     Text(
-                        "支 ${Money.formatWithSymbol(state.expense)}",
+                        "${stringResource(R.string.expense_short)} ${Money.formatWithSymbol(state.expense)}",
                         style = MaterialTheme.typography.labelSmall,
                         color = PositiveGreen,
                     )
                 }
             }
             IconButton(onClick = { viewModel.nextMonth() }) {
-                Icon(Icons.Filled.KeyboardArrowRight, contentDescription = "下个月", tint = TextSecondary)
+                Icon(Icons.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.next_month), tint = TextSecondary)
             }
         }
 
@@ -114,8 +115,8 @@ fun LedgerScreen(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            ManagementChip("账户", onOpenAccounts)
-            ManagementChip("分类", onOpenCategories)
+            ManagementChip(stringResource(R.string.ledger_accounts), onOpenAccounts)
+            ManagementChip(stringResource(R.string.ledger_categories), onOpenCategories)
         }
 
         // 搜索
@@ -125,7 +126,7 @@ fun LedgerScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
-            placeholder = { Text("搜索备注、商户", style = MaterialTheme.typography.bodySmall) },
+            placeholder = { Text(stringResource(R.string.ledger_search_hint), style = MaterialTheme.typography.bodySmall) },
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyMedium,
             shape = RoundedCornerShape(12.dp),
@@ -148,14 +149,14 @@ fun LedgerScreen(
             FilterChip(
                 selected = state.filterType == null,
                 onClick = { viewModel.setFilter(null) },
-                label = { Text("全部") },
+                label = { Text(stringResource(R.string.ledger_filter_all)) },
                 colors = chipColors(),
             )
             listOf(TxType.EXPENSE, TxType.INCOME, TxType.TRANSFER).forEach { type ->
                 FilterChip(
                     selected = state.filterType == type,
                     onClick = { viewModel.setFilter(type) },
-                    label = { Text(type.label) },
+                    label = { Text(stringResource(type.labelResId)) },
                     colors = chipColors(),
                 )
             }
@@ -165,8 +166,8 @@ fun LedgerScreen(
         if (state.transactions.isEmpty()) {
             EmptyState(
                 emoji = "🌙",
-                title = "这个月还没有账目",
-                subtitle = "点击下方 ＋ 快速记一笔",
+                title = stringResource(R.string.ledger_no_records),
+                subtitle = stringResource(R.string.home_add_hint),
                 modifier = Modifier.weight(1f),
             )
         } else {
@@ -238,7 +239,7 @@ private fun LedgerTransactionRow(
     val isExpense = t.type == TxType.EXPENSE
     val title = when (t.type) {
         TxType.TRANSFER -> "${tx.account?.name ?: ""} → ${tx.toAccount?.name ?: ""}"
-        else -> tx.category?.name ?: t.type.label
+        else -> tx.category?.name ?: stringResource(t.type.labelResId)
     }
     val amountColor = when (t.type) {
         TxType.EXPENSE -> PositiveGreen

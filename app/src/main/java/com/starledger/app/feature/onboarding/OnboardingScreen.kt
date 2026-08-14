@@ -20,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.starledger.app.R
 import com.starledger.app.core.design.theme.AccentBlue
 import com.starledger.app.core.design.theme.SpaceBackground
 import com.starledger.app.core.design.theme.StarPurple
@@ -55,23 +57,23 @@ fun OnboardingScreen(onDone: () -> Unit) {
         }
         Spacer(Modifier.height(24.dp))
         Text(
-            "星图账本",
+            stringResource(R.string.app_name),
             style = MaterialTheme.typography.headlineLarge,
             color = TextPrimary,
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            "让每一笔收支，都有自己的轨道",
+            stringResource(R.string.onboarding_slogan),
             style = MaterialTheme.typography.bodyMedium,
             color = TextSecondary,
         )
         Spacer(Modifier.height(40.dp))
 
         listOf(
-            "🔒  数据只保存在你的手机本地",
-            "🤫  安静记账，不打扰、不评判",
-            "🌙  无需登录，离线也能使用",
-            "⭐  每月一颗恒星，一年一个星座",
+            stringResource(R.string.onboarding_point1),
+            stringResource(R.string.onboarding_point2),
+            stringResource(R.string.onboarding_point3),
+            stringResource(R.string.onboarding_point4),
         ).forEach { item ->
             Row(
                 modifier = Modifier
@@ -97,11 +99,11 @@ fun OnboardingScreen(onDone: () -> Unit) {
                 contentColor = SpaceBackground,
             ),
         ) {
-            Text("开始使用", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.onboarding_start), style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(12.dp))
         Text(
-            "自由、开源、免费 · GPL-3.0",
+            stringResource(R.string.onboarding_license),
             style = MaterialTheme.typography.labelSmall,
             color = TextSecondary,
             textAlign = TextAlign.Center,

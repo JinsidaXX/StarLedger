@@ -63,7 +63,7 @@ class PlanRepository @Inject constructor(
             categoryId = categoryId,
             date = now,
             merchant = plan.name,
-            note = "大额消费计划",
+            note = if (java.util.Locale.getDefault().language == "zh") "大额消费计划" else "Purchase plan",
             relatedPlanId = plan.id,
             cycleId = cycle.id,
         )

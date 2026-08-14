@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.ScreenScaffold
@@ -54,7 +56,7 @@ fun PlanEditScreen(
     }
 
     ScreenScaffold(
-        title = if (planId == null) "规划一笔消费" else "编辑消费计划",
+        title = if (planId == null) stringResource(R.string.plan_edit_title) else stringResource(R.string.plan_edit_edit_title),
         onBack = onDone,
     ) {
         LazyColumn(
@@ -67,7 +69,7 @@ fun PlanEditScreen(
                     value = state.name,
                     onValueChange = { viewModel.setName(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("想买什么") },
+                    label = { Text(stringResource(R.string.plan_what)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = fieldColors(),
@@ -78,7 +80,7 @@ fun PlanEditScreen(
                     value = state.amountText,
                     onValueChange = { viewModel.setAmount(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("预计价格（元）") },
+                    label = { Text(stringResource(R.string.plan_estimated_price)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
@@ -86,7 +88,7 @@ fun PlanEditScreen(
                 )
             }
             item {
-                Text("冷静期", style = MaterialTheme.typography.titleSmall, color = TextSecondary)
+                Text(stringResource(R.string.plan_cooling), style = MaterialTheme.typography.titleSmall, color = TextSecondary)
                 Spacer(Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(0, 7, 14, 30).forEach { days ->
@@ -99,7 +101,7 @@ fun PlanEditScreen(
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                         ) {
                             Text(
-                                if (days == 0) "关闭" else "$days 天",
+                                if (days == 0) stringResource(R.string.plan_cooling_off) else stringResource(R.string.plan_cooling_days, days),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = if (selected) AccentBlue else TextSecondary,
                             )
@@ -108,7 +110,7 @@ fun PlanEditScreen(
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "冷静期内只看得到倒计时，不会被反复提问。",
+                    stringResource(R.string.plan_cooling_hint),
                     style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary,
                 )
@@ -118,7 +120,7 @@ fun PlanEditScreen(
                     value = state.reason,
                     onValueChange = { viewModel.setReason(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("为什么想买（可选）") },
+                    label = { Text(stringResource(R.string.plan_why)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = fieldColors(),
@@ -129,7 +131,7 @@ fun PlanEditScreen(
                     value = state.alternative,
                     onValueChange = { viewModel.setAlternative(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("有没有替代方案（可选）") },
+                    label = { Text(stringResource(R.string.plan_alternative)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = fieldColors(),
@@ -140,7 +142,7 @@ fun PlanEditScreen(
                     value = state.targetDateText,
                     onValueChange = { viewModel.setTargetDateText(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("目标购买日期 MM.DD（可选）") },
+                    label = { Text(stringResource(R.string.plan_target_date)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
@@ -152,7 +154,7 @@ fun PlanEditScreen(
                     value = state.note,
                     onValueChange = { viewModel.setNote(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("备注（可选）") },
+                    label = { Text(stringResource(R.string.tx_note)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = fieldColors(),
@@ -174,7 +176,7 @@ fun PlanEditScreen(
                         disabledContentColor = TextSecondary,
                     ),
                 ) {
-                    Text("创建计划", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.plan_create), style = MaterialTheme.typography.titleMedium)
                 }
             }
         }

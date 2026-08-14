@@ -2,6 +2,7 @@ package com.starledger.app.navigation
 
 object Routes {
     const val ONBOARDING = "onboarding"
+    const val LANGUAGE = "language"
     const val MAIN = "main"
 
     const val TRANSACTION_ADD = "transaction_add"

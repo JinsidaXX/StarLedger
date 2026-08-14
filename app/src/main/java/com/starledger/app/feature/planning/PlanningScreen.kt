@@ -39,6 +39,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.allocation.SurplusMode
@@ -87,7 +89,7 @@ fun PlanningScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text("规划", style = MaterialTheme.typography.headlineSmall, color = TextPrimary)
+            Text(stringResource(R.string.planning_title), style = MaterialTheme.typography.headlineSmall, color = TextPrimary)
         }
 
         // 本期收入
@@ -99,14 +101,14 @@ fun PlanningScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column(Modifier.weight(1f)) {
-                            Text("本期收入", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                            Text(stringResource(R.string.planning_this_income), style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                             MoneyText(
                                 cents = state.cycle?.totalIncome ?: 0,
                                 withSymbol = true,
                                 style = MaterialTheme.typography.headlineMedium,
                             )
                             Text(
-                                "自动汇总自记账收入",
+                                stringResource(R.string.planning_auto_from_records),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = TextSecondary,
                             )
@@ -114,7 +116,7 @@ fun PlanningScreen(
                     }
                     Spacer(Modifier.height(12.dp))
                     Row(Modifier.fillMaxWidth()) {
-                        Text("已分配", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+                        Text(stringResource(R.string.planning_allocated), style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                         Spacer(Modifier.weight(1f))
                         Text(
                             "${Money.format(state.cycle?.totalAllocated ?: 0)} / ${Money.format(state.cycle?.totalIncome ?: 0)}",
@@ -142,7 +144,7 @@ fun PlanningScreen(
                             disabledContentColor = TextSecondary,
                         ),
                     ) {
-                        Text(if (state.envelopes.isEmpty()) "按模板分配" else "重新分配")
+                        Text(if (state.envelopes.isEmpty()) stringResource(R.string.planning_apply_template) else stringResource(R.string.planning_reapply))
                     }
                 }
             }
@@ -152,7 +154,7 @@ fun PlanningScreen(
         if (state.envelopes.isNotEmpty()) {
             item {
                 Text(
-                    "预算信封",
+                    stringResource(R.string.planning_envelopes),
                     style = MaterialTheme.typography.titleSmall,
                     color = TextSecondary,
                     modifier = Modifier.padding(start = 4.dp, top = 4.dp),
@@ -175,7 +177,7 @@ fun PlanningScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "大额消费计划",
+                    stringResource(R.string.planning_purchase_plans),
                     style = MaterialTheme.typography.titleSmall,
                     color = TextSecondary,
                     modifier = Modifier.weight(1f),
@@ -187,7 +189,7 @@ fun PlanningScreen(
                         contentColor = TextPrimary,
                     ),
                 ) {
-                    Text("规划一笔消费")
+                    Text(stringResource(R.string.planning_new_plan))
                 }
             }
         }
@@ -195,7 +197,7 @@ fun PlanningScreen(
             item {
                 SectionCard {
                     Text(
-                        "有想买的东西吗？先记下来，冷静几天再决定。",
+                        stringResource(R.string.planning_no_plans),
                         style = MaterialTheme.typography.bodySmall,
                         color = TextSecondary,
                         modifier = Modifier.padding(16.dp),
@@ -245,12 +247,12 @@ fun PlanningScreen(
                     Text("🎒", fontSize = androidx.compose.ui.unit.TextUnit(18f, androidx.compose.ui.unit.TextUnitType.Sp))
                     Spacer(Modifier.width(10.dp))
                     Text(
-                        "我的物品",
+                        stringResource(R.string.planning_my_items),
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextPrimary,
                         modifier = Modifier.weight(1f),
                     )
-                    Text("长期管理 ›", style = MaterialTheme.typography.labelMedium, color = AccentBlue)
+                    Text(stringResource(R.string.planning_long_term), style = MaterialTheme.typography.labelMedium, color = AccentBlue)
                 }
             }
         }
@@ -264,13 +266,13 @@ fun PlanningScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "分配模板",
+                    stringResource(R.string.planning_templates),
                     style = MaterialTheme.typography.titleSmall,
                     color = TextSecondary,
                     modifier = Modifier.weight(1f),
                 )
                 TextButton(onClick = { showCreateTemplateDialog = true }) {
-                    Text("新建模板", color = AccentBlue)
+                    Text(stringResource(R.string.planning_new_template), color = AccentBlue)
                 }
             }
         }
@@ -290,15 +292,15 @@ fun PlanningScreen(
                         modifier = Modifier.weight(1f),
                     )
                     if (template.isDefault) {
-                        Text("默认", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                        Text(stringResource(R.string.planning_default), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                         Spacer(Modifier.width(8.dp))
                     } else {
                         TextButton(onClick = { viewModel.setDefaultTemplate(template) }) {
-                            Text("设为默认", style = MaterialTheme.typography.labelMedium, color = AccentBlue)
+                            Text(stringResource(R.string.planning_set_default), style = MaterialTheme.typography.labelMedium, color = AccentBlue)
                         }
                     }
                     TextButton(onClick = { onTemplateEdit(template.id) }) {
-                        Text("编辑", style = MaterialTheme.typography.labelMedium, color = AccentBlue)
+                        Text(stringResource(R.string.edit), style = MaterialTheme.typography.labelMedium, color = AccentBlue)
                     }
                 }
             }
@@ -309,10 +311,10 @@ fun PlanningScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(16.dp)) {
-                        Text("本期已结束", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
+                        Text(stringResource(R.string.planning_month_ended), style = MaterialTheme.typography.titleMedium, color = TextPrimary)
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "结余 ${Money.formatWithSymbol(state.surplus)}，可以结转下期或归入缓冲。",
+                            stringResource(R.string.planning_surplus_hint, Money.formatWithSymbol(state.surplus)),
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary,
                         )
@@ -324,7 +326,7 @@ fun PlanningScreen(
                                 contentColor = SpaceBackground,
                             ),
                         ) {
-                            Text("处理结余")
+                            Text(stringResource(R.string.planning_surplus_handle))
                         }
                     }
                 }
@@ -348,10 +350,10 @@ fun PlanningScreen(
             AlertDialog(
                 onDismissRequest = { showApplyDialog = false },
                 containerColor = SpaceBackground,
-                title = { Text("按模板分配", color = TextPrimary) },
+                title = { Text(stringResource(R.string.planning_apply_template), color = TextPrimary) },
                 text = {
                     Text(
-                        "使用「${defaultTemplate.name}」把本期收入 ${Money.formatWithSymbol(state.cycle?.totalIncome ?: 0)} 分配到各分类。重新分配会替换现有预算。",
+                        stringResource(R.string.planning_apply_confirm, defaultTemplate.name, Money.formatWithSymbol(state.cycle?.totalIncome ?: 0)),
                         color = TextPrimary,
                     )
                 },
@@ -359,10 +361,10 @@ fun PlanningScreen(
                     TextButton(onClick = {
                         viewModel.applyTemplate(defaultTemplate)
                         showApplyDialog = false
-                    }) { Text("分配", color = AccentBlue) }
+                    }) { Text(stringResource(R.string.planning_allocate), color = AccentBlue) }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showApplyDialog = false }) { Text("取消", color = TextSecondary) }
+                    TextButton(onClick = { showApplyDialog = false }) { Text(stringResource(R.string.cancel), color = TextSecondary) }
                 },
             )
         }
@@ -371,10 +373,10 @@ fun PlanningScreen(
         AlertDialog(
             onDismissRequest = { showSurplusDialog = false },
             containerColor = SpaceBackground,
-            title = { Text("处理结余", color = TextPrimary) },
+            title = { Text(stringResource(R.string.planning_surplus_handle), color = TextPrimary) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("结余 ${Money.formatWithSymbol(state.surplus)}", color = TextPrimary)
+                    Text(stringResource(R.string.review_surplus_amount, Money.formatWithSymbol(state.surplus)), color = TextPrimary)
                     SurplusMode.entries.forEach { mode ->
                         Box(
                             modifier = Modifier
@@ -387,13 +389,13 @@ fun PlanningScreen(
                                 }
                                 .padding(14.dp),
                         ) {
-                            Text(mode.label, color = TextPrimary)
+                            Text(stringResource(mode.labelResId), color = TextPrimary)
                         }
                     }
                 }
             },
             confirmButton = {
-                TextButton(onClick = { showSurplusDialog = false }) { Text("取消", color = TextSecondary) }
+                TextButton(onClick = { showSurplusDialog = false }) { Text(stringResource(R.string.cancel), color = TextSecondary) }
             },
         )
     }
@@ -437,7 +439,7 @@ private fun EnvelopeCard(
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    envelope.type.label,
+                    stringResource(envelope.type.labelResId),
                     style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary,
                 )
@@ -451,7 +453,7 @@ private fun EnvelopeCard(
             SimpleProgress(progress = ratio, color = color, height = 4)
             Spacer(Modifier.height(4.dp))
             Text(
-                "计划 ${Money.format(envelope.plannedAmount)} · 已用 ${Money.format(envelope.actualAmount)}",
+                stringResource(R.string.envelope_planned_used, Money.format(envelope.plannedAmount), Money.format(envelope.actualAmount)),
                 style = MaterialTheme.typography.labelSmall,
                 color = TextSecondary,
             )
@@ -468,13 +470,13 @@ private fun CreateTemplateDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = SpaceBackground,
-        title = { Text("新建模板", color = TextPrimary) },
+        title = { Text(stringResource(R.string.planning_new_template), color = TextPrimary) },
         text = {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("模板名称") },
+                label = { Text(stringResource(R.string.template_name)) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -492,10 +494,10 @@ private fun CreateTemplateDialog(
             TextButton(
                 onClick = { if (name.isNotBlank()) onConfirm(name) },
                 enabled = name.isNotBlank(),
-            ) { Text("创建", color = AccentBlue) }
+            ) { Text(stringResource(R.string.plan_create), color = AccentBlue) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("取消", color = TextSecondary) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = TextSecondary) }
         },
     )
 }
@@ -510,14 +512,14 @@ private fun EnvelopeEditDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = SpaceBackground,
-        title = { Text("调整预算：${envelope.name}", color = TextPrimary) },
+        title = { Text(stringResource(R.string.envelope_adjust_title, envelope.name), color = TextPrimary) },
         text = {
             Column {
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it.filter { c -> c.isDigit() || c == '.' } },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("计划金额（元）") },
+                    label = { Text(stringResource(R.string.amount_yuan)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
@@ -533,7 +535,7 @@ private fun EnvelopeEditDialog(
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    "已使用 ${Money.formatWithSymbol(envelope.actualAmount)}",
+                    stringResource(R.string.envelope_used, Money.formatWithSymbol(envelope.actualAmount)),
                     style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary,
                 )
@@ -543,25 +545,26 @@ private fun EnvelopeEditDialog(
             TextButton(
                 onClick = { Money.parseYuan(text)?.let(onConfirm) },
                 enabled = Money.parseYuan(text) != null,
-            ) { Text("保存", color = AccentBlue) }
+            ) { Text(stringResource(R.string.save), color = AccentBlue) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("取消", color = TextSecondary) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = TextSecondary) }
         },
     )
 }
 
+@Composable
 private fun planStatusText(plan: com.starledger.app.core.model.PlannedPurchase): String = when (plan.status) {
     PlanStatus.COOLING -> {
         val days = TimeUtil.daysFromToday(plan.earliestDecisionDate)
-        if (days > 0) "冷静期 · 距可决定还有 $days 天" else "冷静期结束，可以决定"
+        if (days > 0) stringResource(R.string.home_days_to_decide, days) else stringResource(R.string.plan_cooling_done)
     }
-    PlanStatus.READY -> "可以决定了"
-    PlanStatus.POSTPONED -> "已延期"
-    PlanStatus.CANCELED -> "已放弃"
-    PlanStatus.REPLACED -> "已更换方案"
-    PlanStatus.PURCHASED -> "已购买"
-    PlanStatus.DRAFT -> "草稿"
+    PlanStatus.READY -> stringResource(R.string.plan_status_ready)
+    PlanStatus.POSTPONED -> stringResource(R.string.plan_status_postponed)
+    PlanStatus.CANCELED -> stringResource(R.string.plan_status_canceled)
+    PlanStatus.REPLACED -> stringResource(R.string.plan_status_replaced)
+    PlanStatus.PURCHASED -> stringResource(R.string.plan_status_purchased)
+    PlanStatus.DRAFT -> stringResource(R.string.plan_status_draft)
 }
 
 private fun planStatusColor(plan: com.starledger.app.core.model.PlannedPurchase): Color = when (plan.status) {

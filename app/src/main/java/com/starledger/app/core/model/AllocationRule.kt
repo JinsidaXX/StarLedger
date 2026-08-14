@@ -1,5 +1,7 @@
 package com.starledger.app.core.model
 
+import com.starledger.app.R
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -25,9 +27,9 @@ data class AllocationRule(
     val sortOrder: Int = 0,
 )
 
-enum class RuleType(val label: String) {
-    FIXED_AMOUNT("固定金额"),
-    INCOME_PERCENTAGE("总收入比例"),
-    REMAINING_PERCENTAGE("剩余金额比例"),
-    REMAINDER("全部剩余"),
+enum class RuleType(@androidx.annotation.StringRes val labelResId: Int) {
+    FIXED_AMOUNT(R.string.rule_fixed_amount),
+    INCOME_PERCENTAGE(R.string.rule_income_percentage),
+    REMAINING_PERCENTAGE(R.string.rule_remaining_percentage),
+    REMAINDER(R.string.rule_remainder),
 }

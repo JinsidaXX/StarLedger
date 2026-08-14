@@ -5,17 +5,29 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 /** 时间工具 */
 object TimeUtil {
 
     val zone: ZoneId = ZoneId.systemDefault()
 
-    private val monthFmt = DateTimeFormatter.ofPattern("yyyy年M月")
-    private val dateFmt = DateTimeFormatter.ofPattern("M月d日")
-    private val dateFullFmt = DateTimeFormatter.ofPattern("yyyy年M月d日")
+    private fun isZh(): Boolean = Locale.getDefault().language == "zh"
+
+    private fun monthFmt() = if (isZh()) DateTimeFormatter.ofPattern("yyyy年M月")
+    else DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
+
+    private fun dateFmt() = if (isZh()) DateTimeFormatter.ofPattern("M月d日")
+    else DateTimeFormatter.ofPattern("MMM d", Locale.ENGLISH)
+
+    private fun dateFullFmt() = if (isZh()) DateTimeFormatter.ofPattern("yyyy年M月d日")
+    else DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH)
+
+    private fun weekFmt() = if (isZh()) DateTimeFormatter.ofPattern("EEEE")
+    else DateTimeFormatter.ofPattern("EEEE", Locale.ENGLISH)
+
     private val shortFmt = DateTimeFormatter.ofPattern("MM.dd")
-    private val weekFmt = DateTimeFormatter.ofPattern("EEEE")
     private val timeFmt = DateTimeFormatter.ofPattern("HH:mm")
 
     fun toLocalDate(epochMillis: Long): LocalDate =
@@ -40,20 +52,26 @@ object TimeUtil {
         return toEpochMillis(ym.atEndOfMonth().plusDays(1)) - 1
     }
 
-    fun monthName(year: Int, month: Int): String = "${year}年${month}月"
+    fun monthName(year: Int, month: Int): String =
+        if (isZh()) "${year}年${month}月"
+        else "${YearMonth.of(year, month).month.getDisplayName(TextStyle.FULL, Locale.ENGLISH)} $year"
 
-    fun formatMonth(epochMillis: Long): String = monthFmt.format(toLocalDate(epochMillis))
+    fun monthLabel(month: Int): String =
+        if (isZh()) "${month}月"
+        else java.time.Month.of(month).getDisplayName(TextStyle.FULL, Locale.ENGLISH)
 
-    fun formatDate(epochMillis: Long): String = dateFmt.format(toLocalDate(epochMillis))
+    fun formatMonth(epochMillis: Long): String = monthFmt().format(toLocalDate(epochMillis))
 
-    fun formatDateFull(epochMillis: Long): String = dateFullFmt.format(toLocalDate(epochMillis))
+    fun formatDate(epochMillis: Long): String = dateFmt().format(toLocalDate(epochMillis))
+
+    fun formatDateFull(epochMillis: Long): String = dateFullFmt().format(toLocalDate(epochMillis))
 
     fun formatShort(epochMillis: Long): String = shortFmt.format(toLocalDate(epochMillis))
 
     fun formatRange(start: Long, end: Long): String =
         "${shortFmt.format(toLocalDate(start))} - ${shortFmt.format(toLocalDate(end))}"
 
-    fun dayOfWeek(epochMillis: Long): String = weekFmt.format(toLocalDate(epochMillis))
+    fun dayOfWeek(epochMillis: Long): String = weekFmt().format(toLocalDate(epochMillis))
 
     fun formatTime(epochMillis: Long): String =
         Instant.ofEpochMilli(epochMillis).atZone(zone).toLocalTime().format(timeFmt)

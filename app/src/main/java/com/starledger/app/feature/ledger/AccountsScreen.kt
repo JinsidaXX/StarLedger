@@ -45,6 +45,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.CircleIcon
@@ -71,17 +73,18 @@ fun AccountsScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val deleteError = stringResource(R.string.account_used_cannot_delete)
     var editing by remember { mutableStateOf<Account?>(null) }
     var creating by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
     ScreenScaffold(
-        title = "账户管理",
+        title = stringResource(R.string.account_title),
         onBack = onBack,
         actions = {
             IconButton(onClick = { creating = true }) {
-                Icon(Icons.Filled.Add, contentDescription = "新增账户", tint = AccentBlue)
+                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.account_new), tint = AccentBlue)
             }
         },
     ) {
@@ -93,7 +96,7 @@ fun AccountsScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(16.dp)) {
-                        Text("总资产", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                        Text(stringResource(R.string.account_total), style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                         MoneyText(
                             cents = state.totalAssets,
                             withSymbol = true,
@@ -103,7 +106,7 @@ fun AccountsScreen(
                         if (state.totalLiabilities > 0) {
                             Spacer(Modifier.height(4.dp))
                             Text(
-                                "负债 ${com.starledger.app.core.model.Money.formatWithSymbol(state.totalLiabilities)}",
+                                "${stringResource(R.string.account_liability)} ${com.starledger.app.core.model.Money.formatWithSymbol(state.totalLiabilities)}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = RiskRed,
                             )
@@ -133,7 +136,7 @@ fun AccountsScreen(
                                 color = TextPrimary,
                             )
                             Text(
-                                item.account.type.label + if (item.account.isCredit) " · 负债" else "",
+                                stringResource(item.account.type.labelResId) + if (item.account.isCredit) stringResource(R.string.account_credit_tag) else "",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = TextSecondary,
                             )
@@ -174,7 +177,7 @@ fun AccountsScreen(
             onDelete = { account ->
                 scope.launch {
                     if (!viewModel.delete(account)) {
-                        errorMessage = "该账户已有账目，无法删除"
+                        errorMessage = deleteError
                     }
                     editing = null
                 }
@@ -186,10 +189,10 @@ fun AccountsScreen(
         AlertDialog(
             onDismissRequest = { errorMessage = null },
             containerColor = SpaceBackground,
-            title = { Text("提示", color = TextPrimary) },
+            title = { Text(stringResource(R.string.notice), color = TextPrimary) },
             text = { Text(msg, color = TextPrimary) },
             confirmButton = {
-                TextButton(onClick = { errorMessage = null }) { Text("知道了") }
+                TextButton(onClick = { errorMessage = null }) { Text(stringResource(R.string.close)) }
             },
         )
     }
@@ -205,6 +208,7 @@ private fun AccountEditDialog(
 ) {
     var name by remember(account) { mutableStateOf(account?.name ?: "") }
     var type by remember(account) { mutableStateOf(account?.type ?: AccountType.CASH) }
+    val typeLabel = stringResource(type.labelResId)
     var initialText by remember(account) { mutableStateOf(if (account == null) "" else com.starledger.app.core.model.Money.format(account.initialBalance)) }
     var reconcileText by remember(account) { mutableStateOf("") }
     var isCredit by remember(account) { mutableStateOf(account?.isCredit ?: false) }
@@ -214,14 +218,14 @@ private fun AccountEditDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = SpaceBackground,
-        title = { Text(if (account == null) "新增账户" else "编辑账户", color = TextPrimary) },
+        title = { Text(if (account == null) stringResource(R.string.account_new) else stringResource(R.string.account_edit), color = TextPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("账户名称") },
+                    label = { Text(stringResource(R.string.account_name)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = dialogFieldColors(),
@@ -244,7 +248,7 @@ private fun AccountEditDialog(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
-                                        t.label,
+                                        stringResource(t.labelResId),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = if (type == t) AccentBlue else TextSecondary,
                                     )
@@ -258,7 +262,7 @@ private fun AccountEditDialog(
                         value = initialText,
                         onValueChange = { initialText = it.filter { c -> c.isDigit() || c == '.' } },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("初始余额（元）") },
+                        label = { Text(stringResource(R.string.account_initial_balance)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
@@ -270,7 +274,7 @@ private fun AccountEditDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "当前余额",
+                            stringResource(R.string.account_current_balance),
                             style = MaterialTheme.typography.bodyMedium,
                             color = TextSecondary,
                             modifier = Modifier.weight(1f),
@@ -286,7 +290,7 @@ private fun AccountEditDialog(
                         value = reconcileText,
                         onValueChange = { reconcileText = it.filter { c -> c.isDigit() || c == '.' } },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("核对余额（元，留空不调整）") },
+                        label = { Text(stringResource(R.string.account_reconcile)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
@@ -312,7 +316,7 @@ private fun AccountEditDialog(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("负债账户（信用卡）", style = MaterialTheme.typography.bodyMedium, color = TextPrimary, modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.account_is_credit), style = MaterialTheme.typography.bodyMedium, color = TextPrimary, modifier = Modifier.weight(1f))
                     Switch(
                         checked = isCredit,
                         onCheckedChange = { isCredit = it },
@@ -323,7 +327,7 @@ private fun AccountEditDialog(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("计入总资产", style = MaterialTheme.typography.bodyMedium, color = TextPrimary, modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.account_include_total), style = MaterialTheme.typography.bodyMedium, color = TextPrimary, modifier = Modifier.weight(1f))
                     Switch(
                         checked = includeInTotal,
                         onCheckedChange = { includeInTotal = it },
@@ -332,7 +336,7 @@ private fun AccountEditDialog(
                 }
                 if (account != null) {
                     TextButton(onClick = { onDelete(account) }) {
-                        Text("删除账户", color = RiskRed)
+                        Text(stringResource(R.string.account_delete), color = RiskRed)
                     }
                 }
             }
@@ -344,7 +348,7 @@ private fun AccountEditDialog(
                     val target = com.starledger.app.core.model.Money.parseYuan(reconcileText)
                     onSave(
                         (account ?: Account(name = name, type = type)).copy(
-                            name = name.ifBlank { type.label },
+                            name = name.ifBlank { typeLabel },
                             type = type,
                             initialBalance = cents,
                             isCredit = isCredit,
@@ -355,10 +359,10 @@ private fun AccountEditDialog(
                     )
                 },
                 enabled = name.isNotBlank(),
-            ) { Text("保存", color = AccentBlue) }
+            ) { Text(stringResource(R.string.save), color = AccentBlue) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("取消", color = TextSecondary) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = TextSecondary) }
         },
     )
 }

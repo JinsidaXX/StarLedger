@@ -39,6 +39,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.CircleIcon
@@ -72,17 +74,17 @@ fun PlanDetailScreen(
     var showBuyDialog by remember { mutableStateOf(false) }
 
     ScreenScaffold(
-        title = "消费计划",
+        title = stringResource(R.string.plan_detail_title),
         onBack = onBack,
         actions = {
             TextButton(onClick = { onEdit(planId) }) {
-                Text("编辑", color = AccentBlue)
+                Text(stringResource(R.string.edit), color = AccentBlue)
             }
         },
     ) {
         if (state.loading || state.plan == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("加载中…", color = TextSecondary)
+                Text(stringResource(R.string.loading), color = TextSecondary)
             }
             return@ScreenScaffold
         }
@@ -111,7 +113,7 @@ fun PlanDetailScreen(
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "创建于 ${TimeUtil.formatDateFull(plan.createdAt)}",
+                            stringResource(R.string.plan_created_on, TimeUtil.formatDateFull(plan.createdAt)),
                             style = MaterialTheme.typography.labelSmall,
                             color = TextSecondary,
                         )
@@ -133,13 +135,13 @@ fun PlanDetailScreen(
                                 Text("🌙", fontSize = androidx.compose.ui.unit.TextUnit(28f, androidx.compose.ui.unit.TextUnitType.Sp))
                                 Spacer(Modifier.height(8.dp))
                                 Text(
-                                    "距离可以决定还有 ${state.daysLeft} 天",
+                                    stringResource(R.string.plan_cooling_left, state.daysLeft),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = StarPurple,
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    "冷静期内不着急做决定",
+                                    stringResource(R.string.plan_cooling_wait),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextSecondary,
                                 )
@@ -155,13 +157,13 @@ fun PlanDetailScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text(
-                                    "冷静期结束，可以决定了",
+                                    stringResource(R.string.plan_cooling_done),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = PositiveGreen,
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    "想清楚了再行动",
+                                    stringResource(R.string.plan_think_carefully),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextSecondary,
                                 )
@@ -177,13 +179,13 @@ fun PlanDetailScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text(
-                                    "已购买 ✅",
+                                    stringResource(R.string.plan_purchased),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = PositiveGreen,
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    "这笔消费已记入账本并关联到该计划。",
+                                    stringResource(R.string.plan_purchased_hint),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextSecondary,
                                 )
@@ -199,7 +201,7 @@ fun PlanDetailScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text(
-                                    plan.status.label,
+                                    stringResource(plan.status.labelResId),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = TextSecondary,
                                 )
@@ -215,15 +217,15 @@ fun PlanDetailScreen(
                     SectionCard {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             if (plan.reason.isNotBlank()) {
-                                Text("为什么想买", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(stringResource(R.string.plan_why), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 Text(plan.reason, style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
                             }
                             if (plan.alternative.isNotBlank()) {
-                                Text("替代方案", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(stringResource(R.string.plan_alternative), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 Text(plan.alternative, style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
                             }
                             if (plan.note.isNotBlank()) {
-                                Text("备注", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(stringResource(R.string.tx_note), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 Text(plan.note, style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
                             }
                         }
@@ -245,7 +247,7 @@ fun PlanDetailScreen(
                             contentColor = SpaceBackground,
                         ),
                     ) {
-                        Text("购买", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.plan_buy), style = MaterialTheme.typography.titleMedium)
                     }
                 }
                 item {
@@ -255,12 +257,12 @@ fun PlanDetailScreen(
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = RiskRed),
                     ) {
-                        Text("放弃")
+                        Text(stringResource(R.string.plan_abandon))
                     }
                 }
                 item {
                     Text(
-                        "暂不决定也没关系，计划会保留在这里。",
+                        stringResource(R.string.plan_keep_for_now),
                         style = MaterialTheme.typography.labelSmall,
                         color = TextSecondary,
                         modifier = Modifier.padding(start = 4.dp),
@@ -282,7 +284,7 @@ fun PlanDetailScreen(
                             contentColor = SpaceBackground,
                         ),
                     ) {
-                        Text("转为物品长期管理", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.plan_to_item), style = MaterialTheme.typography.titleMedium)
                     }
                 }
                 item {
@@ -292,7 +294,7 @@ fun PlanDetailScreen(
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = RiskRed),
                     ) {
-                        Text("从计划中删除")
+                        Text(stringResource(R.string.plan_remove))
                     }
                 }
             }
@@ -306,7 +308,7 @@ fun PlanDetailScreen(
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = RiskRed),
                     ) {
-                        Text("放弃这个计划")
+                        Text(stringResource(R.string.plan_abandon_this))
                     }
                 }
             }
@@ -343,14 +345,14 @@ private fun BuyDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = SpaceBackground,
-        title = { Text("确认购买", color = TextPrimary) },
+        title = { Text(stringResource(R.string.plan_confirm_purchase), color = TextPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(
                     value = amountText,
                     onValueChange = { amountText = it.filter { c -> c.isDigit() || c == '.' } },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("实际金额（元）") },
+                    label = { Text(stringResource(R.string.plan_actual_amount)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
@@ -364,7 +366,7 @@ private fun BuyDialog(
                         unfocusedLabelColor = TextSecondary,
                     ),
                 )
-                Text("从哪个账户支付？", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                Text(stringResource(R.string.plan_pay_from), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     accounts.forEach { account ->
                         Row(
@@ -382,7 +384,7 @@ private fun BuyDialog(
                     }
                 }
                 if (envelopes.isNotEmpty()) {
-                    Text("记入哪个预算？（可选）", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                    Text(stringResource(R.string.plan_to_budget), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         envelopes.filter { it.categoryId != null }.take(8).forEach { env ->
                             val selected = selectedCategory == env.categoryId
@@ -409,10 +411,10 @@ private fun BuyDialog(
                     }
                 },
                 enabled = selectedAccount != null && com.starledger.app.core.model.Money.parseYuan(amountText) != null,
-            ) { Text("确认购买", color = AccentBlue) }
+            ) { Text(stringResource(R.string.plan_confirm_purchase), color = AccentBlue) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("取消", color = TextSecondary) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = TextSecondary) }
         },
     )
 }

@@ -26,6 +26,9 @@ class MainViewModel @Inject constructor(
         .map { it.onboardingDone }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    private val _language = MutableStateFlow(settingsStore.getLanguageSync())
+    val language: StateFlow<String> = _language
+
     init {
         viewModelScope.launch {
             seedDefaultsUseCase()
@@ -34,6 +37,12 @@ class MainViewModel @Inject constructor(
     }
 
     fun completeOnboarding() {
-        viewModelScope.launch { settingsStore.setOnboardingDone(true) }
+        kotlinx.coroutines.runBlocking { settingsStore.setOnboardingDone(true) }
+    }
+
+    /** 同步写入语言偏好 */
+    fun applyLanguage(language: String) {
+        settingsStore.setLanguageSync(language)
+        _language.value = language
     }
 }

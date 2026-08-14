@@ -32,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.allocation.SurplusMode
@@ -64,12 +66,12 @@ fun ReviewScreen(
     LaunchedEffect(cycleId) { viewModel.load(cycleId) }
 
     ScreenScaffold(
-        title = "月末复盘",
+        title = stringResource(R.string.review_title),
         onBack = onBack,
     ) {
         if (state.loading || state.cycle == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("加载中…", color = TextSecondary)
+                Text(stringResource(R.string.loading), color = TextSecondary)
             }
             return@ScreenScaffold
         }
@@ -83,11 +85,11 @@ fun ReviewScreen(
             item {
                 SectionCard {
                     Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("本期已结束", style = MaterialTheme.typography.titleMedium, color = TextSecondary)
+                        Text(stringResource(R.string.review_ended), style = MaterialTheme.typography.titleMedium, color = TextSecondary)
                         Spacer(Modifier.height(12.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("总收入", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(stringResource(R.string.review_total_income), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 MoneyText(
                                     cents = state.income,
                                     withSymbol = true,
@@ -96,7 +98,7 @@ fun ReviewScreen(
                                 )
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("总支出", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(stringResource(R.string.review_total_expense), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 MoneyText(
                                     cents = state.expense,
                                     withSymbol = true,
@@ -105,7 +107,7 @@ fun ReviewScreen(
                                 )
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("剩余", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(stringResource(R.string.review_surplus), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 MoneyText(
                                     cents = state.surplus,
                                     withSymbol = true,
@@ -136,7 +138,7 @@ fun ReviewScreen(
             if (state.envelopes.isNotEmpty()) {
                 item {
                     Text(
-                        "预算偏差",
+                        stringResource(R.string.review_budget_deviation),
                         style = MaterialTheme.typography.titleSmall,
                         color = TextSecondary,
                         modifier = Modifier.padding(start = 4.dp),
@@ -174,10 +176,12 @@ fun ReviewScreen(
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
-                                Text("结余处理", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
+                                Text(stringResource(R.string.review_handle_surplus), style = MaterialTheme.typography.titleMedium, color = TextPrimary)
                                 Text(
-                                    "结余 ${Money.formatWithSymbol(state.surplus)}" +
-                                        if (state.cycle?.surplusHandled == true) "（已处理）" else "",
+                                    if (state.cycle?.surplusHandled == true)
+                                        stringResource(R.string.review_surplus_handled, Money.formatWithSymbol(state.surplus))
+                                    else
+                                        stringResource(R.string.review_surplus_amount, Money.formatWithSymbol(state.surplus)),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextSecondary,
                                 )
@@ -190,12 +194,12 @@ fun ReviewScreen(
                                         contentColor = SpaceBackground,
                                     ),
                                 ) {
-                                    Text("处理结余")
+                                    Text(stringResource(R.string.review_handle_surplus))
                                 }
                             }
                         }
                         Text(
-                            "所有问题都可以跳过，星星不会因此消失。",
+                            stringResource(R.string.review_skip_hint),
                             style = MaterialTheme.typography.labelSmall,
                             color = TextSecondary,
                         )
@@ -220,7 +224,7 @@ fun ReviewScreen(
                     ),
                 ) {
                     Text(
-                        if (state.cycle?.reviewCompleted == true) "复盘完成，恒星已点亮" else "完成复盘，生成恒星",
+                        if (state.cycle?.reviewCompleted == true) stringResource(R.string.review_completed_star) else stringResource(R.string.review_complete_star),
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }
@@ -232,10 +236,10 @@ fun ReviewScreen(
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { showSurplusDialog = false },
             containerColor = SpaceBackground,
-            title = { Text("处理结余", color = TextPrimary) },
+            title = { Text(stringResource(R.string.review_handle_surplus), color = TextPrimary) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("结余 ${Money.formatWithSymbol(state.surplus)}", color = TextPrimary)
+                    Text(stringResource(R.string.review_surplus_amount, Money.formatWithSymbol(state.surplus)), color = TextPrimary)
                     SurplusMode.entries.forEach { mode ->
                         Box(
                             modifier = Modifier
@@ -248,14 +252,14 @@ fun ReviewScreen(
                                 }
                                 .padding(14.dp),
                         ) {
-                            Text(mode.label, color = TextPrimary)
+                            Text(stringResource(mode.labelResId), color = TextPrimary)
                         }
                     }
                 }
             },
             confirmButton = {
                 androidx.compose.material3.TextButton(onClick = { showSurplusDialog = false }) {
-                    Text("取消", color = TextSecondary)
+                    Text(stringResource(R.string.cancel), color = TextSecondary)
                 }
             },
         )

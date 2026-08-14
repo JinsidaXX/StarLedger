@@ -15,6 +15,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import com.starledger.app.core.design.theme.toColor
 import com.starledger.app.core.model.MonthlyStar
 import com.starledger.app.core.model.Money
@@ -113,6 +115,8 @@ fun StarCanvas(
     labelStyle: TextStyle = TextStyle(fontSize = 11.sp),
 ) {
     val textMeasurer = rememberTextMeasurer()
+    val rayLeftFormat = stringResource(R.string.star_ray_left)
+    val rayOverFormat = stringResource(R.string.star_ray_over)
     Canvas(modifier = modifier) {
         val r = min(size.width, size.height) / 2f
         val center = Offset(size.width / 2f, size.height / 2f)
@@ -123,6 +127,8 @@ fun StarCanvas(
             textMeasurer = textMeasurer,
             showLabels = showLabels,
             labelStyle = labelStyle,
+            rayLeftFormat = rayLeftFormat,
+            rayOverFormat = rayOverFormat,
         )
     }
 }
@@ -134,6 +140,8 @@ fun DrawScope.drawStar(
     textMeasurer: TextMeasurer? = null,
     showLabels: Boolean = false,
     labelStyle: TextStyle = TextStyle(fontSize = 11.sp),
+    rayLeftFormat: String = "%1\$s · %2\$s left",
+    rayOverFormat: String = "%1\$s +%2\$s",
 ) {
     val state = visual.colorState
     val coreR = radius * 0.24f
@@ -231,9 +239,9 @@ fun DrawScope.drawStar(
                 val labelR = min(tipR + radius * 0.08f, radius * 1.18f)
                 val labelPos = polar(center, labelR, angle)
                 val label = if (ray.remainingAvailable()) {
-                    "${ray.name} 余${Money.format(ray.planned - ray.actual)}"
+                    rayLeftFormat.format(ray.name, Money.format(ray.planned - ray.actual))
                 } else {
-                    "${ray.name} +${Money.format(ray.actual - ray.planned)}"
+                    rayOverFormat.format(ray.name, Money.format(ray.actual - ray.planned))
                 }
                 val measured = textMeasurer.measure(label, labelStyle.copy(color = c.copy(alpha = 0.9f)))
                 val topLeft = Offset(

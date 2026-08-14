@@ -1,5 +1,7 @@
 package com.starledger.app.core.model
 
+import com.starledger.app.R
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -19,9 +21,9 @@ data class BudgetEnvelope(
     val sortOrder: Int = 0,
 )
 
-enum class EnvelopeType(val label: String) {
-    NECESSARY("必要支出"),
-    FLEXIBLE("弹性支出"),
-    SAVING("储蓄"),
-    BUFFER("缓冲"),
+enum class EnvelopeType(@androidx.annotation.StringRes val labelResId: Int) {
+    NECESSARY(R.string.envelope_necessary),
+    FLEXIBLE(R.string.envelope_flexible),
+    SAVING(R.string.envelope_saving),
+    BUFFER(R.string.envelope_buffer),
 }

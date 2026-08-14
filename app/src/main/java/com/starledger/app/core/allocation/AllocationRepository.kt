@@ -1,5 +1,7 @@
 package com.starledger.app.core.allocation
 
+import com.starledger.app.R
+
 import com.starledger.app.core.database.dao.CycleDao
 import com.starledger.app.core.database.dao.EnvelopeDao
 import com.starledger.app.core.database.dao.RuleDao
@@ -16,11 +18,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-enum class SurplusMode(val label: String) {
-    CARRY_TO_NEXT("结转下期"),
-    TO_BUFFER("归入缓冲"),
-    KEEP("保留原处"),
+enum class SurplusMode(@androidx.annotation.StringRes val labelResId: Int) {
+    CARRY_TO_NEXT(R.string.surplus_carry_next),
+    TO_BUFFER(R.string.surplus_to_buffer),
+    KEEP(R.string.surplus_keep),
 }
+
+private fun bufferName(): String = if (java.util.Locale.getDefault().language == "zh") "缓冲" else "Buffer"
 
 @Singleton
 class AllocationRepository @Inject constructor(
@@ -225,7 +229,7 @@ class AllocationRepository @Inject constructor(
                         envelopeDao.insert(
                             BudgetEnvelope(
                                 cycleId = next.id,
-                                name = "缓冲",
+                                name = bufferName(),
                                 plannedAmount = surplus,
                                 remainingAmount = surplus,
                                 type = EnvelopeType.BUFFER,
@@ -258,7 +262,7 @@ class AllocationRepository @Inject constructor(
                         envelopeDao.insert(
                             BudgetEnvelope(
                                 cycleId = cycle.id,
-                                name = "缓冲",
+                                name = bufferName(),
                                 plannedAmount = surplus,
                                 remainingAmount = surplus,
                                 type = EnvelopeType.BUFFER,

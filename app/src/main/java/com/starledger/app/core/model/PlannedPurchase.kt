@@ -1,5 +1,7 @@
 package com.starledger.app.core.model
 
+import com.starledger.app.R
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -22,12 +24,12 @@ data class PlannedPurchase(
     val purchasedTransactionId: Long? = null,
 )
 
-enum class PlanStatus(val label: String) {
-    DRAFT("草稿"),
-    COOLING("冷静期"),
-    READY("可决定"),
-    POSTPONED("已延期"),
-    REPLACED("已更换方案"),
-    CANCELED("已放弃"),
-    PURCHASED("已购买"),
+enum class PlanStatus(@androidx.annotation.StringRes val labelResId: Int) {
+    DRAFT(R.string.plan_status_draft),
+    COOLING(R.string.plan_status_cooling),
+    READY(R.string.plan_status_ready),
+    POSTPONED(R.string.plan_status_postponed),
+    REPLACED(R.string.plan_status_replaced),
+    CANCELED(R.string.plan_status_canceled),
+    PURCHASED(R.string.plan_status_purchased),
 }

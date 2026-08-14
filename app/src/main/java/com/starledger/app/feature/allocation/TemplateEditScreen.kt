@@ -46,6 +46,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.MoneyText
@@ -83,14 +85,14 @@ fun TemplateEditScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     ScreenScaffold(
-        title = state.template?.name ?: "分配模板",
+        title = state.template?.name ?: stringResource(R.string.planning_templates),
         onBack = onBack,
         actions = {
             TextButton(onClick = { showRenameDialog = true }) {
-                Text("重命名", color = AccentBlue)
+                Text(stringResource(R.string.template_rename), color = AccentBlue)
             }
             TextButton(onClick = { showDeleteDialog = true }) {
-                Text("删除", color = RiskRed)
+                Text(stringResource(R.string.template_delete), color = RiskRed)
             }
         },
     ) {
@@ -101,7 +103,7 @@ fun TemplateEditScreen(
         ) {
             item {
                 Text(
-                    "分配时按顺序执行：固定金额 → 总收入比例 → 剩余金额比例 → 全部剩余。收入不足时按顺序截断。",
+                    stringResource(R.string.template_rule_order_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = TextSecondary,
                     modifier = Modifier.padding(bottom = 4.dp),
@@ -132,10 +134,10 @@ fun TemplateEditScreen(
                             )
                         }
                         if (!rule.enabled) {
-                            Text("停用", style = MaterialTheme.typography.labelSmall, color = RiskRed)
+                            Text(stringResource(R.string.disabled), style = MaterialTheme.typography.labelSmall, color = RiskRed)
                             Spacer(Modifier.width(8.dp))
                         }
-                        Text("编辑", style = MaterialTheme.typography.labelMedium, color = AccentBlue)
+                        Text(stringResource(R.string.edit), style = MaterialTheme.typography.labelMedium, color = AccentBlue)
                     }
                 }
             }
@@ -160,13 +162,13 @@ fun TemplateEditScreen(
         AlertDialog(
             onDismissRequest = { showRenameDialog = false },
             containerColor = SpaceBackground,
-            title = { Text("重命名模板", color = TextPrimary) },
+            title = { Text(stringResource(R.string.template_rename_title), color = TextPrimary) },
             text = {
                 OutlinedTextField(
                     value = newName,
                     onValueChange = { newName = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("模板名称") },
+                    label = { Text(stringResource(R.string.template_name)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = fieldColors(),
@@ -181,10 +183,10 @@ fun TemplateEditScreen(
                         }
                     },
                     enabled = newName.isNotBlank(),
-                ) { Text("保存", color = AccentBlue) }
+                ) { Text(stringResource(R.string.save), color = AccentBlue) }
             },
             dismissButton = {
-                TextButton(onClick = { showRenameDialog = false }) { Text("取消", color = TextSecondary) }
+                TextButton(onClick = { showRenameDialog = false }) { Text(stringResource(R.string.cancel), color = TextSecondary) }
             },
         )
     }
@@ -193,31 +195,32 @@ fun TemplateEditScreen(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             containerColor = SpaceBackground,
-            title = { Text("删除模板", color = TextPrimary) },
-            text = { Text("删除「${state.template?.name}」及其所有分配规则？此操作不可恢复。", color = TextPrimary) },
+            title = { Text(stringResource(R.string.template_delete_title), color = TextPrimary) },
+            text = { Text(stringResource(R.string.template_delete_confirm, state.template?.name ?: ""), color = TextPrimary) },
             confirmButton = {
                 TextButton(onClick = {
                     scope.launch {
                         if (viewModel.deleteTemplate()) onBack()
                     }
                     showDeleteDialog = false
-                }) { Text("删除", color = RiskRed) }
+                }) { Text(stringResource(R.string.template_delete), color = RiskRed) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("取消", color = TextSecondary) }
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.cancel), color = TextSecondary) }
             },
         )
     }
 }
 
+@Composable
 private fun ruleDescription(rule: AllocationRule): String = when (rule.ruleType) {
-    RuleType.FIXED_AMOUNT -> "固定 ${Money.formatWithSymbol(rule.value)}"
-    RuleType.INCOME_PERCENTAGE -> "总收入的 ${rule.percent / 100.0}%"
-    RuleType.REMAINING_PERCENTAGE -> "剩余金额的 ${rule.percent / 100.0}%"
-    RuleType.REMAINDER -> "全部剩余"
+    RuleType.FIXED_AMOUNT -> stringResource(R.string.rule_fixed_amount_desc, Money.formatWithSymbol(rule.value))
+    RuleType.INCOME_PERCENTAGE -> stringResource(R.string.rule_income_pct_desc, "${rule.percent / 100.0}%")
+    RuleType.REMAINING_PERCENTAGE -> stringResource(R.string.rule_remaining_pct_desc, "${rule.percent / 100.0}%")
+    RuleType.REMAINDER -> stringResource(R.string.rule_remainder)
 }.let { base ->
-    val cat = rule.categoryId?.let { " · 关联分类" } ?: ""
-    "$base · ${rule.envelopeType.label}$cat"
+    val cat = rule.categoryId?.let { stringResource(R.string.rule_linked_category) } ?: ""
+    "$base · ${stringResource(rule.envelopeType.labelResId)}$cat"
 }
 
 @Composable
@@ -236,7 +239,7 @@ private fun RuleEditDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = SpaceBackground,
-        title = { Text("编辑预算：${rule?.name ?: ""}", color = TextPrimary) },
+        title = { Text(stringResource(R.string.template_edit_rule, rule?.name ?: ""), color = TextPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 if (!isRemainder) {
@@ -244,16 +247,16 @@ private fun RuleEditDialog(
                         value = valueText,
                         onValueChange = { valueText = it.filter { c -> c.isDigit() || c == '.' } },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("金额（元）") },
+                        label = { Text(stringResource(R.string.amount_yuan)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = fieldColors(),
                     )
                 } else {
-                    Text("剩余金额自动分配到这个预算", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+                    Text(stringResource(R.string.template_remainder_hint), style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                 }
-                Text("类型", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                Text(stringResource(R.string.template_type), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     EnvelopeType.entries.forEach { t ->
                         val selected = envelopeType == t
@@ -264,11 +267,11 @@ private fun RuleEditDialog(
                                 .clickable { envelopeType = t }
                                 .padding(horizontal = 8.dp, vertical = 6.dp),
                         ) {
-                            Text(t.label, style = MaterialTheme.typography.labelSmall, color = if (selected) AccentBlue else TextSecondary)
+                            Text(stringResource(t.labelResId), style = MaterialTheme.typography.labelSmall, color = if (selected) AccentBlue else TextSecondary)
                         }
                     }
                 }
-                Text("颜色", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                Text(stringResource(R.string.template_color), style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                 HueColorPicker(
                     color = color,
                     onColorChange = { color = it },
@@ -288,10 +291,10 @@ private fun RuleEditDialog(
                     )
                 },
                 enabled = isRemainder || valueText.isNotBlank(),
-            ) { Text("保存", color = AccentBlue) }
+            ) { Text(stringResource(R.string.save), color = AccentBlue) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("取消", color = TextSecondary) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = TextSecondary) }
         },
     )
 }
@@ -329,7 +332,7 @@ private fun HueColorPicker(
                     .background(Color.hsv(hue.floatValue, saturation, value)),
             )
             Text(
-                "色相 ${hue.floatValue.toInt()}°",
+                stringResource(R.string.template_hue, hue.floatValue.toInt()),
                 style = MaterialTheme.typography.labelSmall,
                 color = TextSecondary,
             )

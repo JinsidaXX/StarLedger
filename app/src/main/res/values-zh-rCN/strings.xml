@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">星图账本</string>
+
+    <!-- 通用 Common -->
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="confirm">确定</string>
+    <string name="loading">加载中…</string>
+    <string name="close">关闭</string>
+    <string name="notice">提示</string>
+    <string name="disabled">停用</string>
+    <string name="expand">展开</string>
+    <string name="collapse">收起</string>
+    <string name="amount_yuan">金额（元）</string>
+
+    <!-- 导航 Navigation -->
+    <string name="tab_current">本期</string>
+    <string name="tab_ledger">账本</string>
+    <string name="tab_planning">规划</string>
+    <string name="tab_starmap">星图</string>
+    <string name="add_transaction">记一笔</string>
+
+    <!-- 引导 Onboarding -->
+    <string name="onboarding_slogan">让每一笔收支，都有自己的轨道</string>
+    <string name="onboarding_point1">🔒  数据只保存在你的手机本地</string>
+    <string name="onboarding_point2">🤫  安静记账，不打扰、不评判</string>
+    <string name="onboarding_point3">🌙  无需登录，离线也能使用</string>
+    <string name="onboarding_point4">⭐  每月一颗恒星，一年一个星座</string>
+    <string name="onboarding_start">开始使用</string>
+    <string name="onboarding_license">自由、开源、免费 · GPL-3.0</string>
+
+    <!-- 本期 Home -->
+    <string name="home_title">本期</string>
+    <string name="home_income">收入</string>
+    <string name="home_expense">支出</string>
+    <string name="home_safe_to_spend">本期可放心使用</string>
+    <string name="home_record_income">记录本期收入</string>
+    <string name="home_allocated">已分配</string>
+    <string name="home_categories_left">各分类剩余</string>
+    <string name="home_total_assets">总资产</string>
+    <string name="home_manage">管理 ›</string>
+    <string name="home_today">今日账目</string>
+    <string name="home_no_records">今天还没有账目</string>
+    <string name="home_add_hint">点击下方 ＋ 记一笔</string>
+    <string name="home_month_star">本月恒星</string>
+    <string name="home_no_records_yet">还没有记录</string>
+    <string name="home_record_first">记录第一笔支出，点亮星芒</string>
+    <string name="home_month_ended">本期已结束</string>
+    <string name="home_view_review">查看复盘</string>
+    <string name="home_active_plans">进行中的消费计划</string>
+    <string name="home_days_to_decide">距离可以决定还有 %1$d 天</string>
+    <string name="home_can_decide">可以决定了</string>
+    <string name="home_planned">计划</string>
+
+    <!-- 账本 Ledger -->
+    <string name="ledger_accounts">账户</string>
+    <string name="ledger_categories">分类</string>
+    <string name="ledger_search_hint">搜索备注、商户</string>
+    <string name="ledger_filter_all">全部</string>
+    <string name="ledger_no_records">这个月还没有账目</string>
+    <string name="ledger_transfer">转账</string>
+    <string name="record_expense">支出</string>
+    <string name="record_income">收入</string>
+
+    <!-- 记账 Transaction -->
+    <string name="tx_add_title">记一笔</string>
+    <string name="tx_edit_title">编辑账目</string>
+    <string name="tx_category">分类</string>
+    <string name="tx_account">账户</string>
+    <string name="tx_transfer_to">转入</string>
+    <string name="tx_more">更多信息</string>
+    <string name="tx_merchant">商户（可选）</string>
+    <string name="tx_note">备注（可选）</string>
+    <string name="tx_choose_account">选择账户</string>
+    <string name="tx_choose_to_account">选择转入账户</string>
+    <string name="tx_please_select">请选择</string>
+
+    <!-- 账户 Accounts -->
+    <string name="account_title">账户管理</string>
+    <string name="account_total">总资产</string>
+    <string name="account_liability">负债</string>
+    <string name="account_new">新增账户</string>
+    <string name="account_edit">编辑账户</string>
+    <string name="account_name">账户名称</string>
+    <string name="account_initial_balance">初始余额（元）</string>
+    <string name="account_current_balance">当前余额</string>
+    <string name="account_reconcile">核对余额（元，留空不调整）</string>
+    <string name="account_is_credit">负债账户（信用卡）</string>
+    <string name="account_include_total">计入总资产</string>
+    <string name="account_delete">删除账户</string>
+    <string name="account_used_cannot_delete">该账户已有账目，无法删除</string>
+
+    <!-- 分类 Categories -->
+    <string name="category_title">分类管理</string>
+    <string name="category_expense">支出分类</string>
+    <string name="category_income">收入分类</string>
+    <string name="category_new">新增分类</string>
+    <string name="category_edit">编辑分类</string>
+    <string name="category_name">分类名称</string>
+    <string name="category_delete">删除分类</string>
+    <string name="category_used_cannot_delete">该分类已有账目，无法删除</string>
+
+    <!-- 规划 Planning -->
+    <string name="planning_title">规划</string>
+    <string name="planning_this_income">本期收入</string>
+    <string name="planning_auto_from_records">自动汇总自记账收入</string>
+    <string name="planning_allocated">已分配</string>
+    <string name="planning_apply_template">按模板分配</string>
+    <string name="planning_reapply">重新分配</string>
+    <string name="planning_envelopes">预算信封</string>
+    <string name="planning_purchase_plans">大额消费计划</string>
+    <string name="planning_new_plan">规划一笔消费</string>
+    <string name="planning_no_plans">有想买的东西吗？先记下来，冷静几天再决定。</string>
+    <string name="planning_my_items">我的物品</string>
+    <string name="planning_long_term">长期管理 ›</string>
+    <string name="planning_templates">分配模板</string>
+    <string name="planning_new_template">新建模板</string>
+    <string name="planning_default">默认</string>
+    <string name="planning_set_default">设为默认</string>
+    <string name="planning_apply_confirm">使用「%1$s」把本期收入 ¥%2$s 分配到各分类。重新分配会替换现有预算。</string>
+    <string name="planning_allocate">分配</string>
+    <string name="planning_surplus_handle">处理结余</string>
+    <string name="planning_month_ended">本期已结束</string>
+    <string name="planning_surplus_hint">结余 ¥%1$s，可以结转下期或归入缓冲。</string>
+    <string name="envelope_planned_used">计划 %1$s · 已用 %2$s</string>
+
+    <!-- 模板编辑 Template -->
+    <string name="template_edit_rule">编辑预算：%1$s</string>
+    <string name="template_rename">重命名</string>
+    <string name="template_delete">删除</string>
+    <string name="template_rename_title">重命名模板</string>
+    <string name="template_name">模板名称</string>
+    <string name="template_delete_title">删除模板</string>
+    <string name="template_delete_confirm">删除「%1$s」及其所有分配规则？此操作不可恢复。</string>
+    <string name="template_type">类型</string>
+    <string name="template_color">颜色</string>
+    <string name="template_hue">色相 %1$d°</string>
+    <string name="template_remainder_hint">剩余金额自动分配到这个预算</string>
+    <string name="template_rule_order_hint">分配时按顺序执行：固定金额 → 总收入比例 → 剩余金额比例 → 全部剩余。收入不足时按顺序截断。</string>
+
+    <!-- 消费计划 Plan -->
+    <string name="plan_edit_title">规划一笔消费</string>
+    <string name="plan_edit_edit_title">编辑消费计划</string>
+    <string name="plan_what">想买什么</string>
+    <string name="plan_estimated_price">预计价格（元）</string>
+    <string name="plan_cooling">冷静期</string>
+    <string name="plan_cooling_off">关闭</string>
+    <string name="plan_cooling_days">%1$d 天</string>
+    <string name="plan_cooling_hint">冷静期内只看得到倒计时，不会被反复提问。</string>
+    <string name="plan_why">为什么想买（可选）</string>
+    <string name="plan_alternative">有没有替代方案（可选）</string>
+    <string name="plan_target_date">目标购买日期 MM.DD（可选）</string>
+    <string name="plan_create">创建计划</string>
+    <string name="plan_detail_title">消费计划</string>
+    <string name="plan_created_on">创建于 %1$s</string>
+    <string name="plan_cooling_left">距离可以决定还有 %1$d 天</string>
+    <string name="plan_cooling_wait">冷静期内不着急做决定</string>
+    <string name="plan_cooling_done">冷静期结束，可以决定了</string>
+    <string name="plan_think_carefully">想清楚了再行动</string>
+    <string name="plan_purchased">已购买 ✅</string>
+    <string name="plan_purchased_hint">这笔消费已记入账本并关联到该计划。</string>
+    <string name="plan_buy">购买</string>
+    <string name="plan_abandon">放弃</string>
+    <string name="plan_keep_for_now">暂不决定也没关系，计划会保留在这里。</string>
+    <string name="plan_abandon_this">放弃这个计划</string>
+    <string name="plan_confirm_purchase">确认购买</string>
+    <string name="plan_actual_amount">实际金额（元）</string>
+    <string name="plan_pay_from">从哪个账户支付？</string>
+    <string name="plan_to_budget">记入哪个预算？（可选）</string>
+    <string name="plan_to_item">转为物品长期管理</string>
+    <string name="plan_remove">从计划中删除</string>
+
+    <!-- 我的物品 Items -->
+    <string name="items_title">我的物品</string>
+    <string name="items_empty">还没有物品</string>
+    <string name="items_empty_hint">完成大额消费计划后，可转为物品长期管理</string>
+    <string name="items_bought_on">购买于 %1$s · 日均 %2$s/天</string>
+
+    <!-- 星图 Starmap -->
+    <string name="starmap_year_title">%1$d 年度星座</string>
+    <string name="starmap_year_summary">收 %1$s · 支 %2$s</string>
+    <string name="starmap_legend_on_plan">计划内</string>
+    <string name="starmap_legend_slight">轻微偏差</string>
+    <string name="starmap_legend_over">超支</string>
+    <string name="starmap_legend_unrecorded">未记录</string>
+    <string name="starmap_month">%1$d月</string>
+
+    <!-- 星详情 Star Detail -->
+    <string name="star_detail_monthly_star">月度恒星</string>
+    <string name="star_status">恒星状态：%1$s</string>
+    <string name="star_record_status">记账状态</string>
+    <string name="star_recorded">已记账</string>
+    <string name="star_not_recorded">未记录</string>
+    <string name="star_alloc_completion">分配完成度</string>
+    <string name="star_rays">星芒 · 各分类预算</string>
+    <string name="star_complete_review">完成复盘</string>
+    <string name="star_review_done">已完成复盘 ✓</string>
+    <string name="star_review_detail">复盘详情</string>
+    <string name="star_mark_unrecorded">这个月没有记录？可以标记为「未记录」</string>
+    <string name="star_mark_recorded">本周期已标记为未记录，点击恢复</string>
+
+    <!-- 复盘 Review -->
+    <string name="review_title">月末复盘</string>
+    <string name="review_ended">本期已结束</string>
+    <string name="review_total_income">总收入</string>
+    <string name="review_total_expense">总支出</string>
+    <string name="review_surplus">剩余</string>
+    <string name="review_budget_deviation">预算偏差</string>
+    <string name="review_handle_surplus">结余处理</string>
+    <string name="review_surplus_amount">结余 %1$s</string>
+    <string name="review_skip_hint">所有问题都可以跳过，星星不会因此消失。</string>
+    <string name="review_complete_star">完成复盘，生成恒星</string>
+    <string name="review_completed_star">复盘完成，恒星已点亮</string>
+
+    <!-- 设置 Settings -->
+    <string name="settings_title">设置</string>
+    <string name="settings_language">语言</string>
+    <string name="language_system">跟随系统</string>
+    <string name="language_zh">简体中文</string>
+    <string name="language_en">English</string>
+    <string name="settings_cooling">大额消费冷静期</string>
+    <string name="settings_daily_amount">首页显示每日可用金额</string>
+    <string name="settings_daily_hint">仅作参考，不打分</string>
+    <string name="settings_backup">备份与恢复</string>
+    <string name="settings_export_json">导出 JSON 备份（全部数据）</string>
+    <string name="settings_import_json">导入 JSON 备份（覆盖当前数据）</string>
+    <string name="settings_export_csv">导出 CSV 账单</string>
+    <string name="settings_privacy">数据与隐私</string>
+    <string name="settings_privacy_desc">· 所有数据只保存在手机本地
+· 无需登录、无需联网
+· 不上传账单、不收集消费行为
+· 无广告、无付费功能</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_import_confirm">导入将覆盖当前全部数据，建议先导出一份备份。是否继续？</string>
+    <string name="settings_import">导入</string>
+
+    <!-- 账本月度导航 Ledger month nav -->
+    <string name="prev_month">上个月</string>
+    <string name="next_month">下个月</string>
+    <string name="income_short">收</string>
+    <string name="expense_short">支</string>
+    <string name="month_format">yyyy年M月</string>
+
+    <!-- enum AccountType -->
+    <string name="account_type_cash">现金</string>
+    <string name="account_type_bank_card">银行卡</string>
+    <string name="account_type_wechat">微信</string>
+    <string name="account_type_alipay">支付宝</string>
+    <string name="account_type_campus_card">校园卡</string>
+    <string name="account_type_credit_card">信用卡</string>
+    <string name="account_type_other">其他</string>
+
+    <!-- enum TxType -->
+    <string name="tx_type_expense">支出</string>
+    <string name="tx_type_income">收入</string>
+    <string name="tx_type_transfer">转账</string>
+    <string name="tx_type_refund">退款</string>
+    <string name="tx_type_reimbursement">报销</string>
+
+    <!-- enum EnvelopeType -->
+    <string name="envelope_necessary">必要支出</string>
+    <string name="envelope_flexible">弹性支出</string>
+    <string name="envelope_saving">储蓄</string>
+    <string name="envelope_buffer">缓冲</string>
+
+    <!-- enum RuleType -->
+    <string name="rule_fixed_amount">固定金额</string>
+    <string name="rule_income_percentage">总收入比例</string>
+    <string name="rule_remaining_percentage">剩余金额比例</string>
+    <string name="rule_remainder">全部剩余</string>
+
+    <!-- enum PlanStatus -->
+    <string name="plan_status_draft">草稿</string>
+    <string name="plan_status_cooling">冷静期</string>
+    <string name="plan_status_ready">可决定</string>
+    <string name="plan_status_postponed">已延期</string>
+    <string name="plan_status_replaced">已更换方案</string>
+    <string name="plan_status_canceled">已放弃</string>
+    <string name="plan_status_purchased">已购买</string>
+
+    <!-- enum StarColorState -->
+    <string name="star_state_blue">计划内</string>
+    <string name="star_state_warm">轻微偏差</string>
+    <string name="star_state_orange">明显偏差</string>
+    <string name="star_state_red">严重超支</string>
+    <string name="star_state_fog">未记录</string>
+    <string name="star_desc_blue">各分类大致符合计划，一切都在轨道上。</string>
+    <string name="star_desc_warm">有分类轻微超出计划，本期需要稍微留意。</string>
+    <string name="star_desc_orange">部分分类明显超出计划，可以考虑下个周期重新安排。</string>
+    <string name="star_desc_red">本期支出明显超过可用资金，建议先查看哪些分类需要关注。</string>
+    <string name="star_desc_fog">本月还没有记录，先记下第一笔账吧。</string>
+
+    <!-- enum SurplusMode -->
+    <string name="surplus_carry_next">结转下期</string>
+    <string name="surplus_to_buffer">归入缓冲</string>
+    <string name="surplus_keep">保留原处</string>
+
+    <!-- 本地化补充 Localization additions -->
+    <string name="back">返回</string>
+    <string name="home_expense_amount">支出 %1$s</string>
+    <string name="home_daily_ref">距离本期结束 %1$d 天 · 参考每日 %2$s</string>
+    <string name="home_collapse">收起 ▲</string>
+    <string name="home_expand">展开 ▼</string>
+    <string name="home_month_summary">总收入 %1$s · 总支出 %2$s · 剩余 %3$s</string>
+    <string name="envelope_planned">计划 %1$s</string>
+    <string name="envelope_adjust_title">调整预算：%1$s</string>
+    <string name="envelope_used">已使用 %1$s</string>
+    <string name="review_surplus_handled">结余 %1$s（已处理）</string>
+    <string name="star_ray_left">%1$s 余 %2$s</string>
+    <string name="star_ray_over">%1$s +%2$s</string>
+    <string name="account_credit_tag"> · 负债</string>
+    <string name="settings_import_confirm_title">确认导入</string>
+    <string name="settings_import_success">导入成功，共恢复 %1$d 条记录</string>
+    <string name="settings_import_fail">导入失败：%1$s</string>
+    <string name="rule_fixed_amount_desc">固定 %1$s</string>
+    <string name="rule_income_pct_desc">总收入的 %1$s</string>
+    <string name="rule_remaining_pct_desc">剩余金额的 %1$s</string>
+    <string name="rule_linked_category"> · 关联分类</string>
+</resources>

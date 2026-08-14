@@ -1,4 +1,322 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">星图账本</string>
+    <string name="app_name">StarLedger</string>
+
+    <!-- 通用 Common -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="confirm">Confirm</string>
+    <string name="loading">Loading…</string>
+    <string name="close">Close</string>
+    <string name="notice">Notice</string>
+    <string name="disabled">Disabled</string>
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
+    <string name="amount_yuan">Amount (¥)</string>
+
+    <!-- 导航 Navigation -->
+    <string name="tab_current">This Month</string>
+    <string name="tab_ledger">Ledger</string>
+    <string name="tab_planning">Plan</string>
+    <string name="tab_starmap">Stars</string>
+    <string name="add_transaction">Add Record</string>
+
+    <!-- 引导 Onboarding -->
+    <string name="onboarding_slogan">Every expense finds its own orbit.</string>
+    <string name="onboarding_point1">🔒  All data stays on your phone</string>
+    <string name="onboarding_point2">🤫  Quiet bookkeeping — no nagging, no judging</string>
+    <string name="onboarding_point3">🌙  No account needed, works offline</string>
+    <string name="onboarding_point4">⭐  A star every month, a constellation every year</string>
+    <string name="onboarding_start">Get Started</string>
+    <string name="onboarding_license">Free · Open Source · GPL-3.0</string>
+
+    <!-- 本期 Home -->
+    <string name="home_title">This Month</string>
+    <string name="home_income">Income</string>
+    <string name="home_expense">Expense</string>
+    <string name="home_safe_to_spend">Available to Spend</string>
+    <string name="home_record_income">Record Income</string>
+    <string name="home_allocated">Allocated</string>
+    <string name="home_categories_left">Category Balances</string>
+    <string name="home_total_assets">Total Assets</string>
+    <string name="home_manage">Manage ›</string>
+    <string name="home_today">Today\'s Records</string>
+    <string name="home_no_records">No records today</string>
+    <string name="home_add_hint">Tap ＋ below to add one</string>
+    <string name="home_month_star">Monthly Star</string>
+    <string name="home_no_records_yet">No records yet</string>
+    <string name="home_record_first">Record your first expense to light up the star</string>
+    <string name="home_month_ended">This month has ended</string>
+    <string name="home_view_review">View Review</string>
+    <string name="home_active_plans">Active Purchase Plans</string>
+    <string name="home_days_to_decide">%1$d days until you can decide</string>
+    <string name="home_can_decide">Ready to decide</string>
+    <string name="home_planned">Planned</string>
+
+    <!-- 账本 Ledger -->
+    <string name="ledger_accounts">Accounts</string>
+    <string name="ledger_categories">Categories</string>
+    <string name="ledger_search_hint">Search notes, merchants</string>
+    <string name="ledger_filter_all">All</string>
+    <string name="ledger_no_records">No records this month</string>
+    <string name="ledger_transfer">Transfer</string>
+    <string name="record_expense">Expense</string>
+    <string name="record_income">Income</string>
+
+    <!-- 记账 Transaction -->
+    <string name="tx_add_title">Add Record</string>
+    <string name="tx_edit_title">Edit Record</string>
+    <string name="tx_category">Category</string>
+    <string name="tx_account">Account</string>
+    <string name="tx_transfer_to">Transfer to</string>
+    <string name="tx_more">More options</string>
+    <string name="tx_merchant">Merchant (optional)</string>
+    <string name="tx_note">Note (optional)</string>
+    <string name="tx_choose_account">Choose account</string>
+    <string name="tx_choose_to_account">Choose target account</string>
+    <string name="tx_please_select">Please select</string>
+
+    <!-- 账户 Accounts -->
+    <string name="account_title">Accounts</string>
+    <string name="account_total">Total Assets</string>
+    <string name="account_liability">Liabilities</string>
+    <string name="account_new">New Account</string>
+    <string name="account_edit">Edit Account</string>
+    <string name="account_name">Account name</string>
+    <string name="account_initial_balance">Initial balance (¥)</string>
+    <string name="account_current_balance">Current balance</string>
+    <string name="account_reconcile">Reconcile balance (¥, leave blank to skip)</string>
+    <string name="account_is_credit">Credit account</string>
+    <string name="account_include_total">Include in total assets</string>
+    <string name="account_delete">Delete account</string>
+    <string name="account_used_cannot_delete">This account has records and cannot be deleted</string>
+
+    <!-- 分类 Categories -->
+    <string name="category_title">Categories</string>
+    <string name="category_expense">Expense Categories</string>
+    <string name="category_income">Income Categories</string>
+    <string name="category_new">New Category</string>
+    <string name="category_edit">Edit Category</string>
+    <string name="category_name">Category name</string>
+    <string name="category_delete">Delete category</string>
+    <string name="category_used_cannot_delete">This category has records and cannot be deleted</string>
+
+    <!-- 规划 Planning -->
+    <string name="planning_title">Plan</string>
+    <string name="planning_this_income">This Month\'s Income</string>
+    <string name="planning_auto_from_records">Auto-summed from your income records</string>
+    <string name="planning_allocated">Allocated</string>
+    <string name="planning_apply_template">Apply Template</string>
+    <string name="planning_reapply">Re-apply</string>
+    <string name="planning_envelopes">Budget Envelopes</string>
+    <string name="planning_purchase_plans">Purchase Plans</string>
+    <string name="planning_new_plan">Plan a Purchase</string>
+    <string name="planning_no_plans">Something you want? Write it down, cool off a few days, then decide.</string>
+    <string name="planning_my_items">My Items</string>
+    <string name="planning_long_term">Long-term ›</string>
+    <string name="planning_templates">Allocation Templates</string>
+    <string name="planning_new_template">New Template</string>
+    <string name="planning_default">Default</string>
+    <string name="planning_set_default">Set Default</string>
+    <string name="planning_apply_confirm">Apply template “%1$s” to allocate ¥%2$s across categories. Re-applying replaces the current budget.</string>
+    <string name="planning_allocate">Allocate</string>
+    <string name="planning_surplus_handle">Handle Surplus</string>
+    <string name="planning_month_ended">This month has ended</string>
+    <string name="planning_surplus_hint">Surplus ¥%1$s — carry over or move to buffer.</string>
+    <string name="envelope_planned_used">Planned %1$s · Used %2$s</string>
+
+    <!-- 模板编辑 Template -->
+    <string name="template_edit_rule">Edit budget: %1$s</string>
+    <string name="template_rename">Rename</string>
+    <string name="template_delete">Delete</string>
+    <string name="template_rename_title">Rename Template</string>
+    <string name="template_name">Template name</string>
+    <string name="template_delete_title">Delete Template</string>
+    <string name="template_delete_confirm">Delete “%1$s” and all its rules? This cannot be undone.</string>
+    <string name="template_type">Type</string>
+    <string name="template_color">Color</string>
+    <string name="template_hue">Hue %1$d°</string>
+    <string name="template_remainder_hint">Remaining amount is auto-allocated here</string>
+    <string name="template_rule_order_hint">Allocation order: Fixed → % of income → % of remaining → Remainder. Truncated if income is insufficient.</string>
+
+    <!-- 消费计划 Plan -->
+    <string name="plan_edit_title">Plan a Purchase</string>
+    <string name="plan_edit_edit_title">Edit Plan</string>
+    <string name="plan_what">What do you want to buy</string>
+    <string name="plan_estimated_price">Estimated price (¥)</string>
+    <string name="plan_cooling">Cooling-off period</string>
+    <string name="plan_cooling_off">Off</string>
+    <string name="plan_cooling_days">%1$d days</string>
+    <string name="plan_cooling_hint">During cooling-off you only see a countdown — no questions asked.</string>
+    <string name="plan_why">Why do you want it (optional)</string>
+    <string name="plan_alternative">Any alternative (optional)</string>
+    <string name="plan_target_date">Target date MM.DD (optional)</string>
+    <string name="plan_create">Create Plan</string>
+    <string name="plan_detail_title">Purchase Plan</string>
+    <string name="plan_created_on">Created on %1$s</string>
+    <string name="plan_cooling_left">%1$d days until you can decide</string>
+    <string name="plan_cooling_wait">Take your time during the cooling-off period</string>
+    <string name="plan_cooling_done">Cooling-off over — you can decide now</string>
+    <string name="plan_think_carefully">Think it through before acting</string>
+    <string name="plan_purchased">Purchased ✅</string>
+    <string name="plan_purchased_hint">This expense is recorded and linked to this plan.</string>
+    <string name="plan_buy">Buy</string>
+    <string name="plan_abandon">Abandon</string>
+    <string name="plan_keep_for_now">No rush — the plan stays here.</string>
+    <string name="plan_abandon_this">Abandon this plan</string>
+    <string name="plan_confirm_purchase">Confirm Purchase</string>
+    <string name="plan_actual_amount">Actual amount (¥)</string>
+    <string name="plan_pay_from">Pay from which account?</string>
+    <string name="plan_to_budget">Charge to which budget? (optional)</string>
+    <string name="plan_to_item">Convert to Item</string>
+    <string name="plan_remove">Remove from plans</string>
+
+    <!-- 我的物品 Items -->
+    <string name="items_title">My Items</string>
+    <string name="items_empty">No items yet</string>
+    <string name="items_empty_hint">After completing a purchase plan, convert it into an item for long-term tracking</string>
+    <string name="items_bought_on">Bought on %1$s · avg %2$s/day</string>
+
+    <!-- 星图 Starmap -->
+    <string name="starmap_year_title">%1$d Constellation</string>
+    <string name="starmap_year_summary">In %1$s · Out %2$s</string>
+    <string name="starmap_legend_on_plan">On plan</string>
+    <string name="starmap_legend_slight">Slight over</string>
+    <string name="starmap_legend_over">Over budget</string>
+    <string name="starmap_legend_unrecorded">Not recorded</string>
+    <string name="starmap_month">%1$d</string>
+
+    <!-- 星详情 Star Detail -->
+    <string name="star_detail_monthly_star">Monthly Star</string>
+    <string name="star_status">Star status: %1$s</string>
+    <string name="star_record_status">Record status</string>
+    <string name="star_recorded">Recorded</string>
+    <string name="star_not_recorded">Not recorded</string>
+    <string name="star_alloc_completion">Allocation</string>
+    <string name="star_rays">Rays · Category Budgets</string>
+    <string name="star_complete_review">Complete Review</string>
+    <string name="star_review_done">Reviewed ✓</string>
+    <string name="star_review_detail">Review Details</string>
+    <string name="star_mark_unrecorded">Mark this month as not recorded</string>
+    <string name="star_mark_recorded">This month was marked as not recorded — tap to restore</string>
+
+    <!-- 复盘 Review -->
+    <string name="review_title">Monthly Review</string>
+    <string name="review_ended">This month has ended</string>
+    <string name="review_total_income">Total Income</string>
+    <string name="review_total_expense">Total Expense</string>
+    <string name="review_surplus">Surplus</string>
+    <string name="review_budget_deviation">Budget Deviation</string>
+    <string name="review_handle_surplus">Handle Surplus</string>
+    <string name="review_surplus_amount">Surplus %1$s</string>
+    <string name="review_skip_hint">All questions can be skipped — the star won\'t disappear.</string>
+    <string name="review_complete_star">Complete review and light the star</string>
+    <string name="review_completed_star">Review complete — star lit</string>
+
+    <!-- 设置 Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="language_system">Follow system</string>
+    <string name="language_zh">简体中文</string>
+    <string name="language_en">English</string>
+    <string name="settings_cooling">Purchase cooling-off period</string>
+    <string name="settings_daily_amount">Show daily available on home</string>
+    <string name="settings_daily_hint">For reference only, never a score</string>
+    <string name="settings_backup">Backup &amp; Restore</string>
+    <string name="settings_export_json">Export JSON backup (all data)</string>
+    <string name="settings_import_json">Import JSON backup (overwrites current data)</string>
+    <string name="settings_export_csv">Export CSV</string>
+    <string name="settings_privacy">Data &amp; Privacy</string>
+    <string name="settings_privacy_desc">· All data stays on your phone
+· No account needed, works offline
+· No data upload, no tracking
+· No ads, no paid features</string>
+    <string name="settings_about">About</string>
+    <string name="settings_import_confirm">Importing overwrites all current data. Export a backup first. Continue?</string>
+    <string name="settings_import">Import</string>
+
+    <!-- 账本月度导航 Ledger month nav -->
+    <string name="prev_month">Previous month</string>
+    <string name="next_month">Next month</string>
+    <string name="income_short">In</string>
+    <string name="expense_short">Out</string>
+    <string name="month_format">MMMM yyyy</string>
+
+    <!-- enum AccountType -->
+    <string name="account_type_cash">Cash</string>
+    <string name="account_type_bank_card">Bank Card</string>
+    <string name="account_type_wechat">WeChat</string>
+    <string name="account_type_alipay">Alipay</string>
+    <string name="account_type_campus_card">Campus Card</string>
+    <string name="account_type_credit_card">Credit Card</string>
+    <string name="account_type_other">Other</string>
+
+    <!-- enum TxType -->
+    <string name="tx_type_expense">Expense</string>
+    <string name="tx_type_income">Income</string>
+    <string name="tx_type_transfer">Transfer</string>
+    <string name="tx_type_refund">Refund</string>
+    <string name="tx_type_reimbursement">Reimbursement</string>
+
+    <!-- enum EnvelopeType -->
+    <string name="envelope_necessary">Essential</string>
+    <string name="envelope_flexible">Flexible</string>
+    <string name="envelope_saving">Savings</string>
+    <string name="envelope_buffer">Buffer</string>
+
+    <!-- enum RuleType -->
+    <string name="rule_fixed_amount">Fixed amount</string>
+    <string name="rule_income_percentage">% of income</string>
+    <string name="rule_remaining_percentage">% of remaining</string>
+    <string name="rule_remainder">Remainder</string>
+
+    <!-- enum PlanStatus -->
+    <string name="plan_status_draft">Draft</string>
+    <string name="plan_status_cooling">Cooling</string>
+    <string name="plan_status_ready">Ready</string>
+    <string name="plan_status_postponed">Postponed</string>
+    <string name="plan_status_replaced">Replaced</string>
+    <string name="plan_status_canceled">Canceled</string>
+    <string name="plan_status_purchased">Purchased</string>
+
+    <!-- enum StarColorState -->
+    <string name="star_state_blue">On plan</string>
+    <string name="star_state_warm">Slight over</string>
+    <string name="star_state_orange">Over budget</string>
+    <string name="star_state_red">Severely over</string>
+    <string name="star_state_fog">Not recorded</string>
+    <string name="star_desc_blue">Everything is on track — categories roughly match the plan.</string>
+    <string name="star_desc_warm">A few categories are slightly over — worth a quick look.</string>
+    <string name="star_desc_orange">Some categories are clearly over — consider re-planning next cycle.</string>
+    <string name="star_desc_red">Spending clearly exceeds available funds — review which categories need attention.</string>
+    <string name="star_desc_fog">No records this month — start with your first entry.</string>
+
+    <!-- enum SurplusMode -->
+    <string name="surplus_carry_next">Carry to next month</string>
+    <string name="surplus_to_buffer">Move to buffer</string>
+    <string name="surplus_keep">Keep as is</string>
+
+    <!-- 本地化补充 Localization additions -->
+    <string name="back">Back</string>
+    <string name="home_expense_amount">Expense %1$s</string>
+    <string name="home_daily_ref">%1$d days left · about %2$s/day</string>
+    <string name="home_collapse">Collapse ▲</string>
+    <string name="home_expand">Expand ▼</string>
+    <string name="home_month_summary">Income %1$s · Expense %2$s · Left %3$s</string>
+    <string name="envelope_planned">Planned %1$s</string>
+    <string name="envelope_adjust_title">Adjust budget: %1$s</string>
+    <string name="envelope_used">Used %1$s</string>
+    <string name="review_surplus_handled">Surplus %1$s (handled)</string>
+    <string name="star_ray_left">%1$s · %2$s left</string>
+    <string name="star_ray_over">%1$s +%2$s</string>
+    <string name="account_credit_tag"> · Credit</string>
+    <string name="settings_import_confirm_title">Confirm Import</string>
+    <string name="settings_import_success">Imported %1$d records</string>
+    <string name="settings_import_fail">Import failed: %1$s</string>
+    <string name="rule_fixed_amount_desc">Fixed %1$s</string>
+    <string name="rule_income_pct_desc">%1$s of income</string>
+    <string name="rule_remaining_pct_desc">%1$s of remaining</string>
+    <string name="rule_linked_category"> · linked category</string>
 </resources>

@@ -48,6 +48,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.CircleIcon
@@ -86,7 +88,7 @@ fun TransactionEditScreen(
 
     if (state.loading) {
         Box(Modifier.fillMaxSize().background(SpaceBackground), contentAlignment = Alignment.Center) {
-            Text("加载中…", color = TextSecondary)
+            Text(stringResource(R.string.loading), color = TextSecondary)
         }
         return
     }
@@ -97,12 +99,12 @@ fun TransactionEditScreen(
     var showMore by remember { mutableStateOf(false) }
 
     ScreenScaffold(
-        title = if (transactionId == null) "记一笔" else "编辑账目",
+        title = if (transactionId == null) stringResource(R.string.tx_add_title) else stringResource(R.string.tx_edit_title),
         onBack = onDone,
         actions = {
             if (transactionId != null) {
                 TextButton(onClick = { viewModel.delete() }) {
-                    Text("删除", color = RiskRed)
+                    Text(stringResource(R.string.delete), color = RiskRed)
                 }
             }
         },
@@ -121,7 +123,7 @@ fun TransactionEditScreen(
                     disabledContentColor = TextSecondary,
                 ),
             ) {
-                Text("保存", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.save), style = MaterialTheme.typography.titleMedium)
             }
         },
     ) {
@@ -150,7 +152,7 @@ fun TransactionEditScreen(
                                 inactiveContentColor = TextSecondary,
                             ),
                         ) {
-                            Text(type.label)
+                            Text(stringResource(type.labelResId))
                         }
                     }
                 }
@@ -162,7 +164,7 @@ fun TransactionEditScreen(
                     value = state.amountText,
                     onValueChange = { viewModel.setAmountText(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("金额（元）") },
+                    label = { Text(stringResource(R.string.amount_yuan)) },
                     placeholder = { Text("0.00") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
@@ -182,7 +184,7 @@ fun TransactionEditScreen(
                         if (incomeLike) !it.isExpense else it.isExpense
                     }
                     Text(
-                        "分类",
+                        stringResource(R.string.tx_category),
                         style = MaterialTheme.typography.titleSmall,
                         color = TextSecondary,
                     )
@@ -207,7 +209,7 @@ fun TransactionEditScreen(
             // 账户
             item {
                 AccountField(
-                    label = "账户",
+                    label = stringResource(R.string.tx_account),
                     account = state.accounts.firstOrNull { it.id == state.accountId },
                     onClick = { showAccountPicker = true },
                 )
@@ -217,7 +219,7 @@ fun TransactionEditScreen(
             if (state.type == TxType.TRANSFER) {
                 item {
                     AccountField(
-                        label = "转入",
+                        label = stringResource(R.string.tx_transfer_to),
                         account = state.accounts.firstOrNull { it.id == state.toAccountId },
                         onClick = { showToAccountPicker = true },
                     )
@@ -258,13 +260,13 @@ fun TransactionEditScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        "更多信息",
+                        stringResource(R.string.tx_more),
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextPrimary,
                         modifier = Modifier.weight(1f),
                     )
                     Text(
-                        if (showMore) "收起" else "展开",
+                        if (showMore) stringResource(R.string.collapse) else stringResource(R.string.expand),
                         style = MaterialTheme.typography.labelMedium,
                         color = TextSecondary,
                     )
@@ -276,7 +278,7 @@ fun TransactionEditScreen(
                         value = state.merchant,
                         onValueChange = { viewModel.setMerchant(it) },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("商户（可选）") },
+                        label = { Text(stringResource(R.string.tx_merchant)) },
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = fieldColors(),
@@ -287,7 +289,7 @@ fun TransactionEditScreen(
                         value = state.note,
                         onValueChange = { viewModel.setNote(it) },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("备注（可选）") },
+                        label = { Text(stringResource(R.string.tx_note)) },
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = fieldColors(),
@@ -300,7 +302,7 @@ fun TransactionEditScreen(
     // ---- 弹窗 ----
     if (showAccountPicker) {
         AccountPickerDialog(
-            title = "选择账户",
+            title = stringResource(R.string.tx_choose_account),
             accounts = state.accounts,
             selectedId = state.accountId,
             onSelect = { viewModel.setAccount(it); showAccountPicker = false },
@@ -309,7 +311,7 @@ fun TransactionEditScreen(
     }
     if (showToAccountPicker) {
         AccountPickerDialog(
-            title = "选择转入账户",
+            title = stringResource(R.string.tx_choose_to_account),
             accounts = state.accounts,
             selectedId = state.toAccountId,
             onSelect = { viewModel.setToAccount(it); showToAccountPicker = false },
@@ -324,10 +326,10 @@ fun TransactionEditScreen(
                 TextButton(onClick = {
                     dateState.selectedDateMillis?.let { viewModel.setDate(it) }
                     showDatePicker = false
-                }) { Text("确定") }
+                }) { Text(stringResource(R.string.confirm)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("取消") }
+                TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.cancel)) }
             },
         ) {
             DatePicker(state = dateState, showModeToggle = false)
@@ -381,7 +383,7 @@ private fun AccountField(
         Text(label, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
         Spacer(Modifier.width(12.dp))
         Text(
-            account?.name ?: "请选择",
+            account?.name ?: stringResource(R.string.tx_please_select),
             style = MaterialTheme.typography.bodyMedium,
             color = TextPrimary,
             modifier = Modifier.weight(1f),
@@ -428,7 +430,7 @@ private fun AccountPickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("取消") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
         },
     )
 }

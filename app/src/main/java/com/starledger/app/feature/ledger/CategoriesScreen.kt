@@ -38,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.CircleIcon
@@ -76,6 +78,7 @@ fun CategoriesScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+    val deleteError = stringResource(R.string.category_used_cannot_delete)
 
     var editing by remember { mutableStateOf<Category?>(null) }
     var creatingExpense by remember { mutableStateOf(false) }
@@ -83,7 +86,7 @@ fun CategoriesScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     ScreenScaffold(
-        title = "分类管理",
+        title = stringResource(R.string.category_title),
         onBack = onBack,
     ) {
         LazyColumn(
@@ -92,13 +95,13 @@ fun CategoriesScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
-                SectionHeader("支出分类") { creatingExpense = true }
+                SectionHeader(stringResource(R.string.category_expense)) { creatingExpense = true }
             }
             items(state.expense, key = { it.id }) { category ->
                 CategoryRow(category = category, onClick = { editing = category })
             }
             item {
-                SectionHeader("收入分类", topPadding = 12) { creatingIncome = true }
+                SectionHeader(stringResource(R.string.category_income), topPadding = 12) { creatingIncome = true }
             }
             items(state.income, key = { it.id }) { category ->
                 CategoryRow(category = category, onClick = { editing = category })
@@ -126,7 +129,7 @@ fun CategoriesScreen(
             onDelete = { category ->
                 scope.launch {
                     if (!viewModel.delete(category)) {
-                        errorMessage = "该分类已有账目，无法删除"
+                        errorMessage = deleteError
                     }
                     editing = null
                 }
@@ -138,10 +141,10 @@ fun CategoriesScreen(
         AlertDialog(
             onDismissRequest = { errorMessage = null },
             containerColor = SpaceBackground,
-            title = { Text("提示", color = TextPrimary) },
+            title = { Text(stringResource(R.string.notice), color = TextPrimary) },
             text = { Text(msg, color = TextPrimary) },
             confirmButton = {
-                TextButton(onClick = { errorMessage = null }) { Text("知道了") }
+                TextButton(onClick = { errorMessage = null }) { Text(stringResource(R.string.close)) }
             },
         )
     }
@@ -166,7 +169,7 @@ private fun SectionHeader(
             modifier = Modifier.weight(1f),
         )
         IconButton(onClick = onAdd) {
-            Icon(Icons.Filled.Add, contentDescription = "新增$title", tint = AccentBlue)
+            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.category_new), tint = AccentBlue)
         }
     }
 }
@@ -189,7 +192,7 @@ private fun CategoryRow(category: Category, onClick: () -> Unit) {
                 color = TextPrimary,
                 modifier = Modifier.weight(1f),
             )
-            Text("编辑", style = MaterialTheme.typography.labelMedium, color = TextSecondary)
+            Text(stringResource(R.string.edit), style = MaterialTheme.typography.labelMedium, color = TextSecondary)
         }
     }
 }
@@ -209,14 +212,14 @@ private fun CategoryEditDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = SpaceBackground,
-        title = { Text(if (category == null) "新增分类" else "编辑分类", color = TextPrimary) },
+        title = { Text(if (category == null) stringResource(R.string.category_new) else stringResource(R.string.category_edit), color = TextPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("分类名称") },
+                    label = { Text(stringResource(R.string.category_name)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = dialogFieldColors(),
@@ -260,7 +263,7 @@ private fun CategoryEditDialog(
                 }
                 if (category != null) {
                     TextButton(onClick = { onDelete(category) }) {
-                        Text("删除分类", color = RiskRed)
+                        Text(stringResource(R.string.category_delete), color = RiskRed)
                     }
                 }
             }
@@ -278,10 +281,10 @@ private fun CategoryEditDialog(
                     )
                 },
                 enabled = name.isNotBlank(),
-            ) { Text("保存", color = AccentBlue) }
+            ) { Text(stringResource(R.string.save), color = AccentBlue) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("取消", color = TextSecondary) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = TextSecondary) }
         },
     )
 }

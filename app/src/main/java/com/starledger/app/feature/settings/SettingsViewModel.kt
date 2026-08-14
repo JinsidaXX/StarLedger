@@ -1,11 +1,14 @@
 package com.starledger.app.feature.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.starledger.app.R
 import com.starledger.app.core.backup.BackupManager
 import com.starledger.app.core.database.SettingsStore
 import com.starledger.app.core.starmap.StarRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,25 +20,30 @@ import javax.inject.Inject
 data class SettingsUiState(
     val coolingDays: Int = 7,
     val showDailyAmount: Boolean = false,
+    val language: String = "system",
     val message: String? = null,
 )
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val settingsStore: SettingsStore,
     private val backupManager: BackupManager,
     private val starRepository: StarRepository,
 ) : ViewModel() {
 
     private val _message = MutableStateFlow<String?>(null)
+    private val _language = MutableStateFlow(settingsStore.getLanguageSync())
 
     val uiState: StateFlow<SettingsUiState> = kotlinx.coroutines.flow.combine(
         settingsStore.settings,
         _message,
-    ) { settings, message ->
+        _language,
+    ) { settings, message, language ->
         SettingsUiState(
             coolingDays = settings.coolingDays,
             showDailyAmount = settings.showDailyAmount,
+            language = language,
             message = message,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsUiState())
@@ -48,6 +56,11 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch { settingsStore.setShowDailyAmount(show) }
     }
 
+    fun setLanguage(language: String) {
+        settingsStore.setLanguageSync(language)
+        _language.value = language
+    }
+
     suspend fun exportJson(): String = backupManager.exportJson()
 
     suspend fun exportCsv(): String = backupManager.exportCsv()
@@ -57,9 +70,9 @@ class SettingsViewModel @Inject constructor(
             try {
                 val count = backupManager.importJson(json)
                 starRepository.refreshAllStars()
-                _message.value = "导入成功，共恢复 $count 条记录"
+                _message.value = context.getString(R.string.settings_import_success, count)
             } catch (e: Exception) {
-                _message.value = "导入失败：${e.message}"
+                _message.value = context.getString(R.string.settings_import_fail, e.message ?: "")
             }
         }
     }

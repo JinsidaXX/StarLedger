@@ -1,5 +1,7 @@
 package com.starledger.app.core.model
 
+import com.starledger.app.R
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -27,10 +29,10 @@ data class MonthlyStar(
     val updatedAt: Long = System.currentTimeMillis(),
 )
 
-enum class StarColorState(val label: String) {
-    BLUE("计划内"),
-    WARM("轻微偏差"),
-    ORANGE("明显偏差"),
-    RED("严重超支"),
-    FOG("未记录"),
+enum class StarColorState(@androidx.annotation.StringRes val labelResId: Int) {
+    BLUE(R.string.star_state_blue),
+    WARM(R.string.star_state_warm),
+    ORANGE(R.string.star_state_orange),
+    RED(R.string.star_state_red),
+    FOG(R.string.star_state_fog),
 }

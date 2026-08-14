@@ -20,6 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.EmptyState
@@ -41,12 +43,12 @@ fun OwnedItemsScreen(
 ) {
     val items by viewModel.items.collectAsStateWithLifecycle()
 
-    ScreenScaffold(title = "我的物品", onBack = onBack) {
+    ScreenScaffold(title = stringResource(R.string.items_title), onBack = onBack) {
         if (items.isEmpty()) {
             EmptyState(
                 emoji = "🎒",
-                title = "还没有物品",
-                subtitle = "完成大额消费计划后，可转为物品长期管理",
+                title = stringResource(R.string.items_empty),
+                subtitle = stringResource(R.string.items_empty_hint),
                 modifier = Modifier.fillMaxSize(),
             )
         } else {
@@ -68,7 +70,7 @@ fun OwnedItemsScreen(
                             Column(Modifier.weight(1f)) {
                                 Text(item.name, style = MaterialTheme.typography.bodyLarge, color = TextPrimary)
                                 Text(
-                                    "购买于 ${TimeUtil.formatDateFull(item.purchaseDate)} · 日均 ${Money.formatWithSymbol(dailyCost(item))}/天",
+                                    stringResource(R.string.items_bought_on, TimeUtil.formatDateFull(item.purchaseDate), Money.formatWithSymbol(dailyCost(item))),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = TextSecondary,
                                 )
@@ -81,7 +83,7 @@ fun OwnedItemsScreen(
                                 color = AccentBlue,
                             )
                             TextButton(onClick = { viewModel.delete(item) }) {
-                                Text("删除", color = RiskRed)
+                                Text(stringResource(R.string.delete), color = RiskRed)
                             }
                         }
                     }

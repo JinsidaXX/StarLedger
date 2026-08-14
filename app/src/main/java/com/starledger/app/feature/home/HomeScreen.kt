@@ -34,8 +34,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.starledger.app.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.starledger.app.core.design.components.CircleIcon
@@ -93,7 +95,7 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text("本期收入", style = MaterialTheme.typography.headlineSmall, color = TextPrimary)
+                    Text(stringResource(R.string.home_title), style = MaterialTheme.typography.headlineSmall, color = TextPrimary)
                     if (cycle != null) {
                         Text(
                             TimeUtil.formatRange(cycle.startDate, cycle.endDate),
@@ -103,20 +105,20 @@ fun HomeScreen(
                     }
                     Row {
                         Text(
-                            "收 ${Money.formatWithSymbol(state.income)}",
+                            "${stringResource(R.string.income_short)} ${Money.formatWithSymbol(state.income)}",
                             style = MaterialTheme.typography.bodySmall,
                             color = RiskRed,
                         )
                         Text("  ", style = MaterialTheme.typography.bodySmall)
                         Text(
-                            "支 ${Money.formatWithSymbol(state.expense)}",
+                            "${stringResource(R.string.expense_short)} ${Money.formatWithSymbol(state.expense)}",
                             style = MaterialTheme.typography.bodySmall,
                             color = PositiveGreen,
                         )
                     }
                 }
                 IconButton(onClick = onOpenSettings) {
-                    Icon(Icons.Filled.Settings, contentDescription = "设置", tint = TextSecondary)
+                    Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.settings_title), tint = TextSecondary)
                 }
             }
         }
@@ -145,18 +147,18 @@ fun HomeScreen(
                     Spacer(Modifier.width(16.dp))
                     Column(Modifier.weight(1f)) {
                         Text(
-                            cycle?.name ?: "本月恒星",
+                            cycle?.name ?: stringResource(R.string.home_month_star),
                             style = MaterialTheme.typography.titleMedium,
                             color = TextPrimary,
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
                             when {
-                                cycle == null -> "还没有记录"
+                                cycle == null -> stringResource(R.string.home_no_records_yet)
                                 state.starVisual.colorState == com.starledger.app.core.model.StarColorState.FOG ->
-                                    "本月还没有记录"
-                                state.expense == 0L -> "记录第一笔支出，点亮星芒"
-                                else -> "支出 ${Money.formatWithSymbol(state.expense)}"
+                                    stringResource(R.string.home_no_records_yet)
+                                state.expense == 0L -> stringResource(R.string.home_record_first)
+                                else -> stringResource(R.string.home_expense_amount, Money.formatWithSymbol(state.expense))
                             },
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary,
@@ -170,7 +172,7 @@ fun HomeScreen(
         item {
             SectionCard {
                 Column(Modifier.padding(20.dp)) {
-                    Text("本期可放心使用", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                    Text(stringResource(R.string.home_safe_to_spend), style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                     Spacer(Modifier.height(6.dp))
                     MoneyText(
                         cents = state.safeToSpend,
@@ -181,7 +183,7 @@ fun HomeScreen(
                     if (state.showDailyAmount && state.daysLeft > 0) {
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "距离本期结束 ${state.daysLeft} 天 · 参考每日 ${Money.formatWithSymbol(state.dailyReference)}",
+                            stringResource(R.string.home_daily_ref, state.daysLeft, Money.formatWithSymbol(state.dailyReference)),
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary,
                         )
@@ -195,7 +197,7 @@ fun HomeScreen(
                                 contentColor = SpaceBackground,
                             ),
                         ) {
-                            Text("记录本期收入")
+                            Text(stringResource(R.string.home_record_income))
                         }
                     }
                 }
@@ -213,7 +215,7 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(Modifier.weight(1f)) {
-                        Text("总资产", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                        Text(stringResource(R.string.home_total_assets), style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                         MoneyText(
                             cents = state.totalAssets,
                             withSymbol = true,
@@ -221,7 +223,7 @@ fun HomeScreen(
                             color = TextPrimary,
                         )
                     }
-                    Text("管理 ›", style = MaterialTheme.typography.labelMedium, color = AccentBlue)
+                    Text(stringResource(R.string.home_manage), style = MaterialTheme.typography.labelMedium, color = AccentBlue)
                 }
             }
         }
@@ -232,7 +234,7 @@ fun HomeScreen(
                 SectionCard {
                     Column(Modifier.padding(16.dp)) {
                         Row(Modifier.fillMaxWidth()) {
-                            Text("已分配", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                            Text(stringResource(R.string.home_allocated), style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                             Spacer(Modifier.weight(1f))
                             Text(
                                 "${Money.format(state.allocated)} / ${Money.format(cycle.totalIncome)}",
@@ -262,13 +264,13 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        "各分类剩余",
+                        stringResource(R.string.home_categories_left),
                         style = MaterialTheme.typography.titleSmall,
                         color = TextSecondary,
                         modifier = Modifier.weight(1f),
                     )
                     Text(
-                        if (categoriesExpanded) "收起 ▲" else "展开 ▼",
+                        if (categoriesExpanded) stringResource(R.string.home_collapse) else stringResource(R.string.home_expand),
                         style = MaterialTheme.typography.labelMedium,
                         color = AccentBlue,
                     )
@@ -285,7 +287,7 @@ fun HomeScreen(
         if (state.activePlans.isNotEmpty()) {
             item {
                 Text(
-                    "进行中的消费计划",
+                    stringResource(R.string.home_active_plans),
                     style = MaterialTheme.typography.titleSmall,
                     color = TextSecondary,
                     modifier = Modifier.padding(start = 4.dp, top = 4.dp),
@@ -299,8 +301,8 @@ fun HomeScreen(
                         leading = { CircleIcon("☄️", com.starledger.app.core.design.theme.StarPurple) },
                         title = plan.name,
                         subtitle = when {
-                            days > 0 -> "距离可以决定还有 $days 天"
-                            days <= 0 -> "可以决定了"
+                            days > 0 -> stringResource(R.string.home_days_to_decide, days)
+                            days <= 0 -> stringResource(R.string.home_can_decide)
                             else -> ""
                         },
                         trailing = {
@@ -319,7 +321,7 @@ fun HomeScreen(
         // 今日账目
         item {
             Text(
-                "今日账目",
+                stringResource(R.string.home_today),
                 style = MaterialTheme.typography.titleSmall,
                 color = TextSecondary,
                 modifier = Modifier.padding(start = 4.dp, top = 4.dp),
@@ -330,8 +332,8 @@ fun HomeScreen(
                 SectionCard {
                     EmptyState(
                         emoji = "✍️",
-                        title = "今天还没有账目",
-                        subtitle = "点击下方 ＋ 记一笔",
+                        title = stringResource(R.string.home_no_records),
+                        subtitle = stringResource(R.string.home_add_hint),
                     )
                 }
             }
@@ -360,9 +362,14 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column(Modifier.weight(1f)) {
-                            Text("本期已结束", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
+                            Text(stringResource(R.string.home_month_ended), style = MaterialTheme.typography.titleMedium, color = TextPrimary)
                             Text(
-                                "总收入 ${Money.formatWithSymbol(cycle.totalIncome)} · 总支出 ${Money.formatWithSymbol(state.expense)} · 剩余 ${Money.formatWithSymbol(cycle.totalIncome - state.expense)}",
+                                stringResource(
+                                    R.string.home_month_summary,
+                                    Money.formatWithSymbol(cycle.totalIncome),
+                                    Money.formatWithSymbol(state.expense),
+                                    Money.formatWithSymbol(cycle.totalIncome - state.expense),
+                                ),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = TextSecondary,
                             )
@@ -374,7 +381,7 @@ fun HomeScreen(
                                 contentColor = TextPrimary,
                             ),
                         ) {
-                            Text("查看复盘")
+                            Text(stringResource(R.string.home_view_review))
                         }
                     }
                 }
@@ -411,7 +418,7 @@ private fun EnvelopeRow(envelope: BudgetEnvelope) {
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    "计划 ${Money.format(envelope.plannedAmount)}",
+                    stringResource(R.string.envelope_planned, Money.format(envelope.plannedAmount)),
                     style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary,
                 )
@@ -444,7 +451,7 @@ private fun TransactionRow(
                 size = 36,
             )
         },
-        title = tx.category?.name ?: t.type.label,
+        title = tx.category?.name ?: stringResource(t.type.labelResId),
         subtitle = listOfNotNull(
             t.merchant.takeIf { it.isNotEmpty() },
             tx.account?.name,
