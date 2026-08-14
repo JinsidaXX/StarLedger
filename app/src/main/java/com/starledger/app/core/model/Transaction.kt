@@ -1,0 +1,31 @@
+package com.starledger.app.core.model
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+/** 交易记录。金额单位统一为分。 */
+@Entity(tableName = "transactions")
+data class Transaction(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val type: TxType,
+    val amount: Long,
+    val accountId: Long,
+    val toAccountId: Long? = null,
+    val categoryId: Long? = null,
+    val date: Long = System.currentTimeMillis(),
+    val merchant: String = "",
+    val note: String = "",
+    val tags: List<String> = emptyList(),
+    val relatedPlanId: Long? = null,
+    val cycleId: Long? = null,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+)
+
+enum class TxType(val label: String) {
+    EXPENSE("支出"),
+    INCOME("收入"),
+    TRANSFER("转账"),
+    REFUND("退款"),
+    REIMBURSEMENT("报销"),
+}
