@@ -18,6 +18,7 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
@@ -38,6 +39,7 @@ private val SpaceBackground = Color(0xFF070A12)
 private val TextPrimary = Color(0xFFF4F7FF)
 private val TextSecondary = Color(0xFFA7B0C3)
 private val AccentBlue = Color(0xFF86A8FF)
+private val RiskRed = Color(0xFFFF6B7A)
 private val PositiveGreen = Color(0xFF58D6A9)
 private val SurplusGold = Color(0xFFF6D477)
 
@@ -70,7 +72,7 @@ class StarLedgerSmallWidget : GlanceAppWidget() {
 private fun StarLedgerWidgetContent(summary: WidgetSummary) {
     Column(
         modifier = GlanceModifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(SpaceBackground)
             .cornerRadius(20.dp)
             .clickable(actionStartActivity(MainActivity::class.java))
@@ -81,8 +83,8 @@ private fun StarLedgerWidgetContent(summary: WidgetSummary) {
         Spacer(modifier = GlanceModifier.height(14.dp))
 
         Row(modifier = GlanceModifier.fillMaxWidth()) {
-            MetricItem("收入", Money.format(summary.income), PositiveGreen, GlanceModifier.defaultWeight())
-            MetricItem("支出", Money.format(summary.expense), TextPrimary, GlanceModifier.defaultWeight())
+            MetricItem("收入", Money.format(summary.income), RiskRed, GlanceModifier.defaultWeight())
+            MetricItem("支出", Money.format(summary.expense), PositiveGreen, GlanceModifier.defaultWeight())
         }
 
         Spacer(modifier = GlanceModifier.height(12.dp))
@@ -98,11 +100,11 @@ private fun StarLedgerWidgetContent(summary: WidgetSummary) {
 private fun StarLedgerSmallWidgetContent(summary: WidgetSummary) {
     Column(
         modifier = GlanceModifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(SpaceBackground)
             .cornerRadius(16.dp)
             .clickable(actionStartActivity(MainActivity::class.java))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(horizontal = 14.dp, vertical = 10.dp),
     ) {
         Row(
             modifier = GlanceModifier.fillMaxWidth(),
@@ -112,22 +114,23 @@ private fun StarLedgerSmallWidgetContent(summary: WidgetSummary) {
                 text = "星图账本 · 本期",
                 style = TextStyle(
                     color = ColorProvider(TextPrimary),
-                    fontSize = 12.sp,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
                 ),
                 maxLines = 1,
             )
         }
 
-        Spacer(modifier = GlanceModifier.height(6.dp))
+        // 用 Spacer 均分垂直空间，让三项指标铺满剩余高度
+        Spacer(modifier = GlanceModifier.height(4.dp).defaultWeight())
 
-        Column(modifier = GlanceModifier.fillMaxWidth()) {
-            SmallMetricItem("收入", Money.format(summary.income), PositiveGreen)
-            Spacer(modifier = GlanceModifier.height(4.dp))
-            SmallMetricItem("支出", Money.format(summary.expense), TextPrimary)
-            Spacer(modifier = GlanceModifier.height(4.dp))
-            SmallMetricItem("可用支出", Money.format(summary.available), AccentBlue)
-        }
+        SmallMetricItem("收入", Money.format(summary.income), RiskRed)
+        Spacer(modifier = GlanceModifier.height(4.dp).defaultWeight())
+        SmallMetricItem("支出", Money.format(summary.expense), PositiveGreen)
+        Spacer(modifier = GlanceModifier.height(4.dp).defaultWeight())
+        SmallMetricItem("可用支出", Money.format(summary.available), AccentBlue)
+
+        Spacer(modifier = GlanceModifier.height(4.dp).defaultWeight())
     }
 }
 
@@ -143,7 +146,7 @@ private fun SmallMetricItem(
     ) {
         Text(
             text = label,
-            style = TextStyle(color = ColorProvider(TextSecondary), fontSize = 11.sp),
+            style = TextStyle(color = ColorProvider(TextSecondary), fontSize = 12.sp),
             maxLines = 1,
         )
         Spacer(modifier = GlanceModifier.defaultWeight())
@@ -151,7 +154,7 @@ private fun SmallMetricItem(
             text = value,
             style = TextStyle(
                 color = ColorProvider(color),
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
             ),
             maxLines = 1,
