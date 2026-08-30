@@ -2,8 +2,11 @@ package com.starledger.app.core.database
 
 import androidx.room.TypeConverter
 import com.starledger.app.core.model.AccountType
+import com.starledger.app.core.model.CycleCloseReason
+import com.starledger.app.core.model.CycleMode
 import com.starledger.app.core.model.CycleStatus
 import com.starledger.app.core.model.EnvelopeType
+import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.PlanStatus
 import com.starledger.app.core.model.RuleType
 import com.starledger.app.core.model.StarColorState
@@ -30,6 +33,24 @@ class Converters {
 
     @TypeConverter
     fun toCycleStatus(value: String): CycleStatus = CycleStatus.valueOf(value)
+
+    @TypeConverter
+    fun fromCycleMode(value: CycleMode): String = value.name
+
+    @TypeConverter
+    fun toCycleMode(value: String): CycleMode = CycleMode.valueOf(value)
+
+    @TypeConverter
+    fun fromCycleCloseReason(value: CycleCloseReason?): String? = value?.name
+
+    @TypeConverter
+    fun toCycleCloseReason(value: String?): CycleCloseReason? = value?.let { CycleCloseReason.valueOf(it) }
+
+    @TypeConverter
+    fun fromIncomeType(value: IncomeType?): String? = value?.name
+
+    @TypeConverter
+    fun toIncomeType(value: String?): IncomeType? = value?.let { IncomeType.valueOf(it) }
 
     @TypeConverter
     fun fromRuleType(value: RuleType): String = value.name

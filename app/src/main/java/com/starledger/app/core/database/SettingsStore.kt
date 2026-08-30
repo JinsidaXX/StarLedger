@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.starledger.app.core.model.CycleMode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -25,6 +26,8 @@ data class AppSettings(
     val showDailyAmount: Boolean = false,
     val lastAccountId: Long = 0,
     val lastCategoryId: Long = 0,
+    val cycleMode: CycleMode = CycleMode.CALENDAR_MONTH,
+    val maxRunDays: Int = 50,
 )
 
 @Singleton
@@ -38,6 +41,8 @@ class SettingsStore @Inject constructor(
         val SHOW_DAILY_AMOUNT = booleanPreferencesKey("show_daily_amount")
         val LAST_ACCOUNT_ID = longPreferencesKey("last_account_id")
         val LAST_CATEGORY_ID = longPreferencesKey("last_category_id")
+        val CYCLE_MODE = stringPreferencesKey("cycle_mode")
+        val MAX_RUN_DAYS = intPreferencesKey("max_run_days")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { prefs ->
@@ -48,6 +53,9 @@ class SettingsStore @Inject constructor(
             showDailyAmount = prefs[Keys.SHOW_DAILY_AMOUNT] ?: false,
             lastAccountId = prefs[Keys.LAST_ACCOUNT_ID] ?: 0,
             lastCategoryId = prefs[Keys.LAST_CATEGORY_ID] ?: 0,
+            cycleMode = prefs[Keys.CYCLE_MODE]?.let { runCatching { CycleMode.valueOf(it) }.getOrNull() }
+                ?: CycleMode.CALENDAR_MONTH,
+            maxRunDays = prefs[Keys.MAX_RUN_DAYS] ?: 50,
         )
     }
 
@@ -86,5 +94,13 @@ class SettingsStore @Inject constructor(
 
     suspend fun setLastCategoryId(id: Long) {
         context.dataStore.edit { it[Keys.LAST_CATEGORY_ID] = id }
+    }
+
+    suspend fun setCycleMode(mode: CycleMode) {
+        context.dataStore.edit { it[Keys.CYCLE_MODE] = mode.name }
+    }
+
+    suspend fun setMaxRunDays(days: Int) {
+        context.dataStore.edit { it[Keys.MAX_RUN_DAYS] = days }
     }
 }

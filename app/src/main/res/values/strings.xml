@@ -319,4 +319,39 @@
     <string name="rule_income_pct_desc">%1$s of income</string>
     <string name="rule_remaining_pct_desc">%1$s of remaining</string>
     <string name="rule_linked_category"> · linked category</string>
+
+    <!-- Income type enum IncomeType -->
+    <string name="income_type_primary_salary">Primary Salary</string>
+    <string name="income_type_bonus">Bonus</string>
+    <string name="income_type_part_time">Part-time</string>
+    <string name="income_type_other">Other Income</string>
+
+    <!-- Cycle mode enum CycleMode -->
+    <string name="cycle_mode_calendar">Calendar Month</string>
+    <string name="cycle_mode_rolling">Rolling Salary</string>
+
+    <!-- Cycle close reason enum CycleCloseReason -->
+    <string name="cycle_close_confirmed_salary">Confirmed Salary</string>
+    <string name="cycle_close_manual">Manual</string>
+    <string name="cycle_close_calendar_auto">Calendar Auto</string>
+
+    <!-- Transaction income type -->
+    <string name="tx_income_type">Income Type</string>
+
+    <!-- Primary salary confirmation -->
+    <string name="salary_confirm_title">Primary Salary Detected</string>
+    <string name="salary_confirm_message">End the current running cycle (%1$d days elapsed) and start a new one?</string>
+    <string name="salary_confirm_new_cycle">Yes, start new cycle</string>
+    <string name="salary_confirm_as_normal">No, treat as normal income</string>
+
+    <!-- Settings - financial cycle -->
+    <string name="settings_cycle_mode">Financial Cycle Mode</string>
+    <string name="settings_cycle_hint">Rolling salary mode: cycles are driven by salary events and never auto-close by date.</string>
+    <string name="settings_running_cycle">Current cycle running for %1$d days</string>
+    <string name="settings_settle_cycle">Settle Now</string>
+    <string name="settings_settle_title">End &amp; Settle Cycle</string>
+    <string name="settings_settle_confirm">After settling there will be no running cycle; record an expense requires starting a cycle first. Surplus rolls into the Wish Jar. Continue?</string>
+    <string name="settings_settle_done">Cycle Settled</string>
+    <string name="settings_settle_result">Surplus %1$s rolled into the Wish Jar.</string>
+    <string name="settings_settle_result_zero">No surplus this cycle.</string>
 </resources>

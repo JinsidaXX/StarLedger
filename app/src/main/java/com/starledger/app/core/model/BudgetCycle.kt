@@ -22,6 +22,14 @@ data class BudgetCycle(
     val markedUnrecorded: Boolean = false,
     val reviewCompleted: Boolean = false,
     val surplusHandled: Boolean = false,
+    /** 周期模式：日历月 / 滚动薪资 */
+    val cycleMode: CycleMode = CycleMode.CALENDAR_MONTH,
+    /** 周期关闭类型（审计排查用），运行中为 null */
+    val closeReason: CycleCloseReason? = null,
+    /** 滚动薪资模式的最大运行天数（仅告警，不强制关闭），默认 50 天 */
+    val maxRunDays: Int = 50,
+    /** 预算延迟生效时间：预发工资时，规划消费预算延迟到该时间解锁；null 表示立即生效 */
+    val effectStartTime: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 )

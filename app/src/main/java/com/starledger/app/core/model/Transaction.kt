@@ -20,6 +20,8 @@ data class Transaction(
     val tags: List<String> = emptyList(),
     val relatedPlanId: Long? = null,
     val cycleId: Long? = null,
+    /** 收入类型：仅对 INCOME 类交易有意义，用于滚动薪资周期判定 */
+    val incomeType: IncomeType? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 )

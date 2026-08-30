@@ -3,6 +3,8 @@ package com.starledger.app.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.starledger.app.core.database.dao.AccountDao
 import com.starledger.app.core.database.dao.CategoryDao
 import com.starledger.app.core.database.dao.CycleDao
@@ -37,7 +39,7 @@ import com.starledger.app.core.model.Transaction
         MonthlyStar::class,
         OwnedItem::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -55,5 +57,20 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         const val NAME = "starledger.db"
+
+        /** v3 → v4：新增收入类型与滚动薪资周期字段 */
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE transactions ADD COLUMN incomeType TEXT NULL")
+                db.execSQL(
+                    "ALTER TABLE budget_cycles ADD COLUMN cycleMode TEXT NOT NULL DEFAULT 'CALENDAR_MONTH'"
+                )
+                db.execSQL("ALTER TABLE budget_cycles ADD COLUMN closeReason TEXT NULL")
+                db.execSQL(
+                    "ALTER TABLE budget_cycles ADD COLUMN maxRunDays INTEGER NOT NULL DEFAULT 50"
+                )
+                db.execSQL("ALTER TABLE budget_cycles ADD COLUMN effectStartTime INTEGER NULL")
+            }
+        }
     }
 }

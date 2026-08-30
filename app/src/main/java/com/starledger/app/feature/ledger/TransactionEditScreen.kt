@@ -64,6 +64,7 @@ import com.starledger.app.core.design.theme.toArgbLong
 import com.starledger.app.core.design.theme.toColor
 import com.starledger.app.core.model.Account
 import com.starledger.app.core.model.Category
+import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.TimeUtil
 import com.starledger.app.core.model.TxType
 
@@ -81,9 +82,6 @@ fun TransactionEditScreen(
     }
     LaunchedEffect(state.saved, state.deleted) {
         if (state.saved || state.deleted) onDone()
-    }
-    LaunchedEffect(state.error) {
-        state.error?.let { viewModel.clearError() }
     }
 
     if (state.loading) {
@@ -153,6 +151,44 @@ fun TransactionEditScreen(
                             ),
                         ) {
                             Text(stringResource(type.labelResId))
+                        }
+                    }
+                }
+            }
+
+            // 收入类型（仅收入）
+            if (state.type == TxType.INCOME) {
+                item {
+                    Text(
+                        stringResource(R.string.tx_income_type),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = TextSecondary,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        IncomeType.entries.forEach { incomeType ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(
+                                        if (state.incomeType == incomeType) AccentBlue.copy(alpha = 0.22f)
+                                        else SurfaceSecondary
+                                    )
+                                    .clickable { viewModel.setIncomeType(incomeType) }
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    stringResource(incomeType.labelResId),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (state.incomeType == incomeType) AccentBlue else TextPrimary,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                if (state.incomeType == incomeType) {
+                                    Text("✓", color = AccentBlue)
+                                }
+                            }
                         }
                     }
                 }
@@ -300,6 +336,42 @@ fun TransactionEditScreen(
     }
 
     // ---- 弹窗 ----
+    if (state.error != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearError() },
+            containerColor = SpaceBackground,
+            title = { Text(stringResource(R.string.notice), color = TextPrimary) },
+            text = { Text(state.error ?: "", color = TextSecondary) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearError() }) {
+                    Text(stringResource(R.string.confirm), color = AccentBlue)
+                }
+            },
+        )
+    }
+    if (state.showSalaryConfirm) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissSalaryConfirm() },
+            containerColor = SpaceBackground,
+            title = { Text(stringResource(R.string.salary_confirm_title), color = TextPrimary) },
+            text = {
+                Text(
+                    stringResource(R.string.salary_confirm_message, state.salaryRunningDays),
+                    color = TextSecondary,
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.confirmSalaryNewCycle() }) {
+                    Text(stringResource(R.string.salary_confirm_new_cycle), color = AccentBlue)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.confirmSalaryAsNormal() }) {
+                    Text(stringResource(R.string.salary_confirm_as_normal), color = TextSecondary)
+                }
+            },
+        )
+    }
     if (showAccountPicker) {
         AccountPickerDialog(
             title = stringResource(R.string.tx_choose_account),

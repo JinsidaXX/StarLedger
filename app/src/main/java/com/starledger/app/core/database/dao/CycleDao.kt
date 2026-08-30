@@ -28,6 +28,12 @@ interface CycleDao {
     @Query("SELECT * FROM budget_cycles WHERE status = 'ACTIVE' ORDER BY startDate DESC LIMIT 1")
     suspend fun getActive(): BudgetCycle?
 
+    @Query("SELECT * FROM budget_cycles WHERE status = 'ACTIVE' ORDER BY startDate DESC LIMIT 1")
+    suspend fun getRunning(): BudgetCycle?
+
+    @Query("SELECT * FROM budget_cycles WHERE status = 'ACTIVE' ORDER BY startDate DESC")
+    suspend fun getActiveAll(): List<BudgetCycle>
+
     @Query("SELECT * FROM budget_cycles WHERE endDate < :now ORDER BY endDate DESC")
     suspend fun getPast(now: Long): List<BudgetCycle>
 

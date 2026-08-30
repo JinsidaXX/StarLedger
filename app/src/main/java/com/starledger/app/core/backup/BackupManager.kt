@@ -16,8 +16,11 @@ import com.starledger.app.core.model.AllocationTemplate
 import com.starledger.app.core.model.BudgetCycle
 import com.starledger.app.core.model.BudgetEnvelope
 import com.starledger.app.core.model.Category
+import com.starledger.app.core.model.CycleCloseReason
+import com.starledger.app.core.model.CycleMode
 import com.starledger.app.core.model.CycleStatus
 import com.starledger.app.core.model.EnvelopeType
+import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.MonthlyStar
 import com.starledger.app.core.model.PlanStatus
 import com.starledger.app.core.model.PlannedPurchase
@@ -193,6 +196,7 @@ class BackupManager @Inject constructor(
         .put("tags", JSONArray(t.tags))
         .put("relatedPlanId", t.relatedPlanId ?: JSONObject.NULL)
         .put("cycleId", t.cycleId ?: JSONObject.NULL)
+        .put("incomeType", t.incomeType?.name ?: JSONObject.NULL)
         .put("createdAt", t.createdAt).put("updatedAt", t.updatedAt)
 
     private fun transactionFromJson(o: JSONObject) = Transaction(
@@ -206,6 +210,7 @@ class BackupManager @Inject constructor(
             .map { i -> o.getJSONArray("tags").getString(i) },
         relatedPlanId = if (o.isNull("relatedPlanId")) null else o.getLong("relatedPlanId"),
         cycleId = if (o.isNull("cycleId")) null else o.getLong("cycleId"),
+        incomeType = if (o.isNull("incomeType")) null else IncomeType.valueOf(o.getString("incomeType")),
         createdAt = o.getLong("createdAt"), updatedAt = o.getLong("updatedAt"),
     )
 
@@ -216,6 +221,10 @@ class BackupManager @Inject constructor(
         .put("observationCompleteness", c.observationCompleteness.toDouble())
         .put("markedUnrecorded", c.markedUnrecorded)
         .put("reviewCompleted", c.reviewCompleted).put("surplusHandled", c.surplusHandled)
+        .put("cycleMode", c.cycleMode.name)
+        .put("closeReason", c.closeReason?.name ?: JSONObject.NULL)
+        .put("maxRunDays", c.maxRunDays)
+        .put("effectStartTime", c.effectStartTime ?: JSONObject.NULL)
         .put("createdAt", c.createdAt).put("updatedAt", c.updatedAt)
 
     private fun cycleFromJson(o: JSONObject) = BudgetCycle(
@@ -227,6 +236,12 @@ class BackupManager @Inject constructor(
         markedUnrecorded = o.optBoolean("markedUnrecorded"),
         reviewCompleted = o.optBoolean("reviewCompleted"),
         surplusHandled = o.optBoolean("surplusHandled"),
+        cycleMode = o.optString("cycleMode").takeIf { it.isNotEmpty() }
+            ?.let { CycleMode.valueOf(it) } ?: CycleMode.CALENDAR_MONTH,
+        closeReason = if (o.isNull("closeReason")) null
+        else CycleCloseReason.valueOf(o.getString("closeReason")),
+        maxRunDays = o.optInt("maxRunDays", 50),
+        effectStartTime = if (o.isNull("effectStartTime")) null else o.getLong("effectStartTime"),
         createdAt = o.getLong("createdAt"), updatedAt = o.getLong("updatedAt"),
     )
 

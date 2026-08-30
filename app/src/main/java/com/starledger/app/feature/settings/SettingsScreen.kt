@@ -48,6 +48,8 @@ import com.starledger.app.core.design.theme.SpaceBackground
 import com.starledger.app.core.design.theme.SurfaceSecondary
 import com.starledger.app.core.design.theme.TextPrimary
 import com.starledger.app.core.design.theme.TextSecondary
+import com.starledger.app.core.model.CycleMode
+import com.starledger.app.core.model.Money
 import java.time.LocalDate
 import kotlinx.coroutines.launch
 
@@ -62,6 +64,8 @@ fun SettingsScreen(
 
     var showImportConfirm by remember { mutableStateOf<String?>(null) }
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showSettleConfirm by remember { mutableStateOf(false) }
+    var settleResult by remember { mutableStateOf<Long?>(null) }
 
     val exportJsonLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -172,6 +176,55 @@ fun SettingsScreen(
                 }
             }
 
+            // 财务周期
+            item {
+                SectionCard {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text(stringResource(R.string.settings_cycle_mode), style = MaterialTheme.typography.titleSmall, color = TextPrimary)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            CycleMode.entries.forEach { mode ->
+                                val selected = state.cycleMode == mode
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(18.dp))
+                                        .background(if (selected) AccentBlue.copy(alpha = 0.25f) else SurfaceSecondary)
+                                        .clickable { viewModel.setCycleMode(mode) }
+                                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                                ) {
+                                    Text(
+                                        stringResource(mode.labelResId),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = if (selected) AccentBlue else TextSecondary,
+                                    )
+                                }
+                            }
+                        }
+                        Text(
+                            stringResource(R.string.settings_cycle_hint),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondary,
+                        )
+                        if (state.runningCycleDays != null) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(
+                                        stringResource(R.string.settings_running_cycle, state.runningCycleDays!!),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = TextPrimary,
+                                    )
+                                }
+                                TextButton(onClick = { showSettleConfirm = true }) {
+                                    Text(stringResource(R.string.settings_settle_cycle), color = RiskRed)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // 备份与恢复
             item {
                 SectionCard {
@@ -209,7 +262,7 @@ fun SettingsScreen(
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleSmall, color = TextPrimary)
-                        Text("${stringResource(R.string.app_name)} v0.1.0", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+                        Text("${stringResource(R.string.app_name)} v0.2.0", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                         Text(
                             "${stringResource(R.string.onboarding_slogan)}\n${stringResource(R.string.onboarding_license)}",
                             style = MaterialTheme.typography.bodySmall,
@@ -219,6 +272,51 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+
+    // 手动结束并结算确认
+    if (showSettleConfirm) {
+        AlertDialog(
+            onDismissRequest = { showSettleConfirm = false },
+            containerColor = SpaceBackground,
+            title = { Text(stringResource(R.string.settings_settle_title), color = TextPrimary) },
+            text = {
+                Text(
+                    stringResource(R.string.settings_settle_confirm),
+                    color = TextPrimary,
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.manualSettleCurrentCycle { surplus ->
+                        settleResult = surplus
+                        showSettleConfirm = false
+                    }
+                }) { Text(stringResource(R.string.confirm), color = RiskRed) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSettleConfirm = false }) { Text(stringResource(R.string.cancel), color = TextSecondary) }
+            },
+        )
+    }
+
+    // 结算结果提示
+    settleResult?.let { surplus ->
+        AlertDialog(
+            onDismissRequest = { settleResult = null },
+            containerColor = SpaceBackground,
+            title = { Text(stringResource(R.string.settings_settle_done), color = TextPrimary) },
+            text = {
+                Text(
+                    if (surplus > 0) stringResource(R.string.settings_settle_result, Money.formatWithSymbol(surplus))
+                    else stringResource(R.string.settings_settle_result_zero),
+                    color = TextSecondary,
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { settleResult = null }) { Text(stringResource(R.string.confirm), color = AccentBlue) }
+            },
+        )
     }
 
     // 导入确认
