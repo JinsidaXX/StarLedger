@@ -15,6 +15,7 @@ import com.starledger.app.core.model.TimeUtil
 import com.starledger.app.core.model.TxType
 import com.starledger.app.core.starmap.StarEngine
 import com.starledger.app.core.starmap.StarVisual
+import com.starledger.app.core.saving.ForcedSavingCalculator
 import com.starledger.app.feature.planning.PlanRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -84,7 +85,17 @@ class HomeViewModel @Inject constructor(
                     activeDays = activeDays,
                     hasTransactions = activeDays > 0,
                 )
-                val safe = BudgetCalculator.safeToSpend(envelopes)
+                val safe = if (envelopes.isEmpty()) {
+                    // 未分配时，用「可用支出」口径：收入 - 强制存储 - 非医疗支出
+                    val nonMedicalExpense = txs.filter { tx ->
+                        tx.type == TxType.EXPENSE &&
+                            (tx.categoryId?.let { cid -> categories.firstOrNull { it.id == cid }?.isMedical != true } ?: true)
+                    }.sumOf { it.amount }
+                    ForcedSavingCalculator
+                        .compute(cycle, income, nonMedicalExpense).availableSpending
+                } else {
+                    BudgetCalculator.safeToSpend(envelopes)
+                }
                 val daysLeft = (TimeUtil.daysFromToday(cycle.endDate) + 1).toInt().coerceAtLeast(0)
                 HomeUiState(
                     cycle = cycle,

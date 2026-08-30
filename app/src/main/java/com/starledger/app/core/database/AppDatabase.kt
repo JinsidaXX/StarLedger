@@ -39,7 +39,7 @@ import com.starledger.app.core.model.Transaction
         MonthlyStar::class,
         OwnedItem::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -82,6 +82,13 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE budget_cycles ADD COLUMN forcedSavingValue INTEGER NOT NULL DEFAULT 0")
                 db.execSQL("ALTER TABLE budget_cycles ADD COLUMN forcedSavingAmount INTEGER NOT NULL DEFAULT 0")
                 db.execSQL("ALTER TABLE categories ADD COLUMN isMedical INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        /** v5 → v6：默认「医疗与应急」分类标记为医疗豁免 */
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("UPDATE categories SET isMedical = 1 WHERE name = '医疗与应急' OR name = 'Medical'")
             }
         }
     }

@@ -50,7 +50,11 @@ object SeedData {
         val names = if (zh) catZh else catEn
         val incNames = if (zh) incomeZh else incomeEn
         val expense = names.mapIndexed { i, name ->
-            Category(name = name, icon = catIcons[i], color = catColors[i].toLong(), sortOrder = i)
+            // 「医疗与应急」分类默认标记为医疗豁免，不占可用支出额度、不触发超支提示
+            Category(
+                name = name, icon = catIcons[i], color = catColors[i].toLong(), sortOrder = i,
+                isMedical = i == 8,
+            )
         }
         val income = listOf(
             Category(name = incNames[0], icon = "💰", color = 0xFF58D6A9, isExpense = false, sortOrder = 0),

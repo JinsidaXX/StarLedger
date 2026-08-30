@@ -29,6 +29,8 @@ data class PlanningUiState(
     val expense: Long = 0,
     val surplus: Long = 0,
     val cycleEnded: Boolean = false,
+    /** 可分配资金 = 收入 - 强制存储目标 */
+    val allocatable: Long = 0,
 )
 
 @HiltViewModel
@@ -60,6 +62,8 @@ class PlanningViewModel @Inject constructor(
                         expense = expense,
                         surplus = (cycle.totalIncome - expense).coerceAtLeast(0),
                         cycleEnded = cycle.endDate < System.currentTimeMillis(),
+                        allocatable = com.starledger.app.core.saving.ForcedSavingCalculator
+                            .allocatableFunds(cycle, cycle.totalIncome),
                     )
                 }
             }

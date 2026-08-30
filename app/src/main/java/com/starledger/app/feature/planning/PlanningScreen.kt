@@ -353,7 +353,7 @@ fun PlanningScreen(
                 title = { Text(stringResource(R.string.planning_apply_template), color = TextPrimary) },
                 text = {
                     Text(
-                        stringResource(R.string.planning_apply_confirm, defaultTemplate.name, Money.formatWithSymbol(state.cycle?.totalIncome ?: 0)),
+                        stringResource(R.string.planning_apply_confirm, defaultTemplate.name, Money.formatWithSymbol(state.allocatable)),
                         color = TextPrimary,
                     )
                 },

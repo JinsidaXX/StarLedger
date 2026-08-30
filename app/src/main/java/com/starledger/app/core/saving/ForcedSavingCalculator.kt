@@ -40,6 +40,10 @@ object ForcedSavingCalculator {
             (income * cycle.forcedSavingValue / PERCENT_BASE).coerceAtLeast(0)
     }
 
+    /** 可分配资金 = 收入 - 强制存储目标（用于信封分配与主页可用口径的基数） */
+    fun allocatableFunds(cycle: BudgetCycle, income: Long): Long =
+        (income - targetOf(cycle, income)).coerceAtLeast(0)
+
     /**
      * 计算四项指标。
      *

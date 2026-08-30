@@ -147,8 +147,8 @@ class AllocationRepository @Inject constructor(
     suspend fun updateEnvelope(envelope: BudgetEnvelope) = envelopeDao.update(envelope)
 
     /**
-     * 按模板把本期收入分配到信封。
-     * 重新分配会替换该周期已有信封。
+     * 按模板把本期「可用资金」分配到信封。
+     * 可用资金 = 收入 - 强制存储目标；重新分配会替换该周期已有信封。
      */
     suspend fun applyAllocation(
         cycle: BudgetCycle,
@@ -156,7 +156,9 @@ class AllocationRepository @Inject constructor(
         income: Long,
     ): AllocationPreview {
         val rules = ruleDao.getByTemplate(template.id)
-        val preview = AllocationEngine.allocate(income, rules)
+        val allocatable = com.starledger.app.core.saving.ForcedSavingCalculator
+            .allocatableFunds(cycle, income)
+        val preview = AllocationEngine.allocate(allocatable, rules)
         envelopeDao.deleteByCycle(cycle.id)
         val envelopes = preview.items.filter { it.amount > 0 }.mapIndexed { index, item ->
             BudgetEnvelope(
