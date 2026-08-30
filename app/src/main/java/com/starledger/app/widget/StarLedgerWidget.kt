@@ -76,20 +76,46 @@ private fun StarLedgerWidgetContent(summary: WidgetSummary) {
             .background(SpaceBackground)
             .cornerRadius(20.dp)
             .clickable(actionStartActivity(MainActivity::class.java))
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        HeaderRow()
+        Row(
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .defaultWeight(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "星图账本",
+                style = TextStyle(
+                    color = ColorProvider(TextPrimary),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+            )
+            Spacer(modifier = GlanceModifier.width(8.dp))
+            Text(
+                text = "本期",
+                style = TextStyle(color = ColorProvider(TextSecondary), fontSize = 12.sp),
+            )
+        }
 
-        Spacer(modifier = GlanceModifier.height(14.dp))
-
-        Row(modifier = GlanceModifier.fillMaxWidth()) {
+        Row(
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .defaultWeight(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             MetricItem("收入", Money.format(summary.income), RiskRed, GlanceModifier.defaultWeight())
             MetricItem("支出", Money.format(summary.expense), PositiveGreen, GlanceModifier.defaultWeight())
         }
 
-        Spacer(modifier = GlanceModifier.height(12.dp))
-
-        Row(modifier = GlanceModifier.fillMaxWidth()) {
+        Row(
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .defaultWeight(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             MetricItem("可用支出", Money.format(summary.available), AccentBlue, GlanceModifier.defaultWeight())
             MetricItem("结余", Money.format(summary.surplus), SurplusGold, GlanceModifier.defaultWeight())
         }
@@ -158,28 +184,6 @@ private fun SmallMetricItem(
                 fontWeight = FontWeight.Bold,
             ),
             maxLines = 1,
-        )
-    }
-}
-
-@Composable
-private fun HeaderRow() {
-    Row(
-        modifier = GlanceModifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = "星图账本",
-            style = TextStyle(
-                color = ColorProvider(TextPrimary),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-        )
-        Spacer(modifier = GlanceModifier.width(8.dp))
-        Text(
-            text = "本期",
-            style = TextStyle(color = ColorProvider(TextSecondary), fontSize = 12.sp),
         )
     }
 }
