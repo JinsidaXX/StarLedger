@@ -262,7 +262,7 @@ fun SettingsScreen(
                 SectionCard {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleSmall, color = TextPrimary)
-                        Text("${stringResource(R.string.app_name)} v0.2.0", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+                        Text("${stringResource(R.string.app_name)} v0.3.0", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                         Text(
                             "${stringResource(R.string.onboarding_slogan)}\n${stringResource(R.string.onboarding_license)}",
                             style = MaterialTheme.typography.bodySmall,
