@@ -354,4 +354,7 @@
     <string name="settings_settle_done">Cycle Settled</string>
     <string name="settings_settle_result">Surplus %1$s rolled into the Wish Jar.</string>
     <string name="settings_settle_result_zero">No surplus this cycle.</string>
+
+    <!-- 小组件 Widget -->
+    <string name="widget_description">StarLedger · current cycle overview</string>
 </resources>

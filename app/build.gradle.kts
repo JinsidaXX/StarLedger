@@ -62,6 +62,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
+    // Glance AppWidget
+    implementation("androidx.glance:glance-appwidget:1.1.1")
+
     // Core
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")

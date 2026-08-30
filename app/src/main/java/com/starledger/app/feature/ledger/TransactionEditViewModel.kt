@@ -15,6 +15,7 @@ import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.Money
 import com.starledger.app.core.model.Transaction
 import com.starledger.app.core.model.TxType
+import com.starledger.app.widget.WidgetUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,6 +54,7 @@ class TransactionEditViewModel @Inject constructor(
     private val deleteTransactionUseCase: DeleteTransactionUseCase,
     private val settingsStore: SettingsStore,
     private val cycleService: CycleService,
+    private val widgetUpdater: WidgetUpdater,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TransactionFormState())
@@ -253,6 +255,7 @@ class TransactionEditViewModel @Inject constructor(
             }
             settingsStore.setLastAccountId(tx.accountId)
             tx.categoryId?.let { settingsStore.setLastCategoryId(it) }
+            widgetUpdater.refresh()
             _state.update { it.copy(saved = true, showSalaryConfirm = false) }
         } catch (e: NoRunningCycleException) {
             _state.update {
@@ -270,6 +273,7 @@ class TransactionEditViewModel @Inject constructor(
         val tx = existing ?: return
         viewModelScope.launch {
             deleteTransactionUseCase(tx)
+            widgetUpdater.refresh()
             _state.update { it.copy(deleted = true) }
         }
     }

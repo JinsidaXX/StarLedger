@@ -354,4 +354,7 @@
     <string name="settings_settle_done">周期已结算</string>
     <string name="settings_settle_result">本周期结余 %1$s，已滚入心愿存钱罐。</string>
     <string name="settings_settle_result_zero">本周期无结余。</string>
+
+    <!-- 小组件 Widget -->
+    <string name="widget_description">星图账本 · 本周期概览</string>
 </resources>

@@ -9,6 +9,7 @@ import com.starledger.app.core.cycle.CycleService
 import com.starledger.app.core.database.SettingsStore
 import com.starledger.app.core.model.CycleMode
 import com.starledger.app.core.starmap.StarRepository
+import com.starledger.app.widget.WidgetUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +36,7 @@ class SettingsViewModel @Inject constructor(
     private val backupManager: BackupManager,
     private val starRepository: StarRepository,
     private val cycleService: CycleService,
+    private val widgetUpdater: WidgetUpdater,
 ) : ViewModel() {
 
     private val _message = MutableStateFlow<String?>(null)
@@ -93,6 +95,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val settlement = cycleService.manuallySettleCurrent()
             onResult(settlement?.surplus)
+            widgetUpdater.refresh()
             refreshRunningCycle()
         }
     }
