@@ -140,5 +140,8 @@ class LedgerRepository @Inject constructor(
     suspend fun sumIncome(start: Long, end: Long): Long =
         transactionDao.sumIncome(start, end)
 
+    suspend fun sumNonMedicalExpense(start: Long, end: Long): Long =
+        transactionDao.sumNonMedicalExpense(start, end)
+
     suspend fun getAllTransactions(): List<Transaction> = transactionDao.getAll()
 }

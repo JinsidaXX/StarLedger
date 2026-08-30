@@ -113,4 +113,15 @@ interface TransactionDao {
 
     @Query("SELECT * FROM transactions ORDER BY date DESC, id DESC")
     suspend fun getAll(): List<Transaction>
+
+    /** 非医疗支出合计（医疗类不占可用支出额度）。未关联分类的支出计入非医疗。 */
+    @Query(
+        """
+        SELECT COALESCE(SUM(t.amount), 0) FROM transactions t
+        LEFT JOIN categories c ON t.categoryId = c.id
+        WHERE t.type = 'EXPENSE' AND t.date BETWEEN :start AND :end
+        AND (c.id IS NULL OR c.isMedical = 0)
+        """
+    )
+    suspend fun sumNonMedicalExpense(start: Long, end: Long): Long
 }

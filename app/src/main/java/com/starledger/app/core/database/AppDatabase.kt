@@ -39,7 +39,7 @@ import com.starledger.app.core.model.Transaction
         MonthlyStar::class,
         OwnedItem::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -70,6 +70,18 @@ abstract class AppDatabase : RoomDatabase() {
                     "ALTER TABLE budget_cycles ADD COLUMN maxRunDays INTEGER NOT NULL DEFAULT 50"
                 )
                 db.execSQL("ALTER TABLE budget_cycles ADD COLUMN effectStartTime INTEGER NULL")
+            }
+        }
+
+        /** v4 → v5：新增强制存储字段与医疗分类标志 */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE budget_cycles ADD COLUMN forcedSavingType TEXT NOT NULL DEFAULT 'NONE'"
+                )
+                db.execSQL("ALTER TABLE budget_cycles ADD COLUMN forcedSavingValue INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE budget_cycles ADD COLUMN forcedSavingAmount INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE categories ADD COLUMN isMedical INTEGER NOT NULL DEFAULT 0")
             }
         }
     }

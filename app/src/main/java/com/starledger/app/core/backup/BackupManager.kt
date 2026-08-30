@@ -20,6 +20,7 @@ import com.starledger.app.core.model.CycleCloseReason
 import com.starledger.app.core.model.CycleMode
 import com.starledger.app.core.model.CycleStatus
 import com.starledger.app.core.model.EnvelopeType
+import com.starledger.app.core.model.ForcedSavingType
 import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.MonthlyStar
 import com.starledger.app.core.model.PlanStatus
@@ -179,11 +180,13 @@ class BackupManager @Inject constructor(
 
     private fun categoryToJson(c: Category) = JSONObject()
         .put("id", c.id).put("name", c.name).put("icon", c.icon).put("color", c.color)
-        .put("isExpense", c.isExpense).put("sortOrder", c.sortOrder).put("createdAt", c.createdAt)
+        .put("isExpense", c.isExpense).put("isMedical", c.isMedical)
+        .put("sortOrder", c.sortOrder).put("createdAt", c.createdAt)
 
     private fun categoryFromJson(o: JSONObject) = Category(
         id = o.getLong("id"), name = o.getString("name"), icon = o.optString("icon", "📦"),
         color = o.optLong("color", 0xFF86A8FF), isExpense = o.optBoolean("isExpense", true),
+        isMedical = o.optBoolean("isMedical"),
         sortOrder = o.optInt("sortOrder"), createdAt = o.optLong("createdAt", System.currentTimeMillis()),
     )
 
@@ -225,6 +228,9 @@ class BackupManager @Inject constructor(
         .put("closeReason", c.closeReason?.name ?: JSONObject.NULL)
         .put("maxRunDays", c.maxRunDays)
         .put("effectStartTime", c.effectStartTime ?: JSONObject.NULL)
+        .put("forcedSavingType", c.forcedSavingType.name)
+        .put("forcedSavingValue", c.forcedSavingValue)
+        .put("forcedSavingAmount", c.forcedSavingAmount)
         .put("createdAt", c.createdAt).put("updatedAt", c.updatedAt)
 
     private fun cycleFromJson(o: JSONObject) = BudgetCycle(
@@ -242,6 +248,10 @@ class BackupManager @Inject constructor(
         else CycleCloseReason.valueOf(o.getString("closeReason")),
         maxRunDays = o.optInt("maxRunDays", 50),
         effectStartTime = if (o.isNull("effectStartTime")) null else o.getLong("effectStartTime"),
+        forcedSavingType = o.optString("forcedSavingType").takeIf { it.isNotEmpty() }
+            ?.let { ForcedSavingType.valueOf(it) } ?: ForcedSavingType.NONE,
+        forcedSavingValue = o.optLong("forcedSavingValue"),
+        forcedSavingAmount = o.optLong("forcedSavingAmount"),
         createdAt = o.getLong("createdAt"), updatedAt = o.getLong("updatedAt"),
     )
 

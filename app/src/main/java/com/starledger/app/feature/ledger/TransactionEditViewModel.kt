@@ -11,10 +11,13 @@ import com.starledger.app.core.ledger.NoRunningCycleException
 import com.starledger.app.core.ledger.UpdateTransactionUseCase
 import com.starledger.app.core.model.Account
 import com.starledger.app.core.model.Category
+import com.starledger.app.core.model.ForcedSavingType
 import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.Money
 import com.starledger.app.core.model.Transaction
 import com.starledger.app.core.model.TxType
+import com.starledger.app.core.saving.ForcedSavingCalculator
+import com.starledger.app.core.saving.ForcedSavingParams
 import com.starledger.app.widget.WidgetUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +47,11 @@ data class TransactionFormState(
     // 主薪资确认弹窗
     val showSalaryConfirm: Boolean = false,
     val salaryRunningDays: Long = 0,
+    // 强制存储设置（随主薪资下发）
+    val forcedSavingType: ForcedSavingType = ForcedSavingType.NONE,
+    val forcedSavingText: String = "",
+    // 超支侵蚀提示
+    val showOverBudgetWarning: Boolean = false,
 )
 
 @HiltViewModel
@@ -129,6 +137,15 @@ class TransactionEditViewModel @Inject constructor(
         _state.update { it.copy(incomeType = incomeType) }
     }
 
+    fun setForcedSavingType(type: ForcedSavingType) {
+        _state.update { it.copy(forcedSavingType = type) }
+    }
+
+    fun setForcedSavingText(text: String) {
+        val filtered = text.filter { it.isDigit() || it == '.' }
+        _state.update { it.copy(forcedSavingText = filtered) }
+    }
+
     fun setAmountText(text: String) {
         val filtered = text.filter { it.isDigit() || it == '.' }
         val parts = filtered.split('.')
@@ -175,7 +192,7 @@ class TransactionEditViewModel @Inject constructor(
         else -> s.amountCents > 0 && s.accountId != null && s.categoryId != null
     }
 
-    /** 保存入口：新增主薪资收入时先检查是否需确认周期切换 */
+    /** 保存入口：新增主薪资收入时先检查是否需确认周期切换；支出超支时提示 */
     fun save() {
         val state = _state.value
         if (!state.canSave) return
@@ -196,8 +213,31 @@ class TransactionEditViewModel @Inject constructor(
                     return@launch
                 }
             }
+            // 支出超支侵蚀提示：单笔 > 50 元且会动到强制存储
+            if (existing == null && tx.type == TxType.EXPENSE && tx.amount > 50_00L) {
+                if (wouldErodeForcedSaving(tx)) {
+                    _state.update { it.copy(showOverBudgetWarning = true) }
+                    return@launch
+                }
+            }
             doSave(tx)
         }
+    }
+
+    private suspend fun wouldErodeForcedSaving(tx: Transaction): Boolean {
+        val cycle = cycleService.getRunningCycle() ?: return false
+        if (cycle.forcedSavingType == ForcedSavingType.NONE) return false
+        // 可用支出 = 收入 - 强制存储目标 - 非医疗支出；本笔为非医疗时若导致可用转负则动到存储
+        val medical = tx.categoryId?.let { id ->
+            ledgerRepository.getCategories().firstOrNull { it.id == id }?.isMedical == true
+        } ?: false
+        if (medical) return false
+        val income = cycle.totalIncome
+        val target = ForcedSavingCalculator.targetOf(cycle, income)
+        val existingNonMedical = ledgerRepository.sumNonMedicalExpense(cycle.startDate, cycle.endDate)
+        val before = income - target - existingNonMedical
+        val after = before - tx.amount
+        return before >= 0 && after < 0
     }
 
     /** 确认主薪资：结算旧周期并开启新周期，该笔作为新周期第一笔收入 */
@@ -206,7 +246,10 @@ class TransactionEditViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val settings = settingsStore.current()
-                cycleService.confirmPrimarySalary(state.date, settings.maxRunDays)
+                cycleService.confirmPrimarySalary(
+                    state.date, settings.maxRunDays,
+                    forcedSaving = buildForcedSaving(state),
+                )
                 doSave(buildTransaction(state))
             } catch (e: Exception) {
                 _state.update { it.copy(error = "保存失败：${e.message}", showSalaryConfirm = false) }
@@ -228,6 +271,33 @@ class TransactionEditViewModel @Inject constructor(
 
     fun dismissSalaryConfirm() {
         _state.update { it.copy(showSalaryConfirm = false) }
+    }
+
+    /** 确认超支，继续保存（动到强制存储） */
+    fun confirmOverBudget() {
+        val state = _state.value
+        viewModelScope.launch {
+            doSave(buildTransaction(state))
+        }
+    }
+
+    /** 取消超支保存 */
+    fun cancelOverBudget() {
+        _state.update { it.copy(showOverBudgetWarning = false) }
+    }
+
+    private fun buildForcedSaving(state: TransactionFormState): ForcedSavingParams {
+        if (state.forcedSavingType == ForcedSavingType.NONE) return ForcedSavingParams()
+        val value = when (state.forcedSavingType) {
+            ForcedSavingType.FIXED_AMOUNT -> Money.parseYuan(state.forcedSavingText) ?: 0L
+            ForcedSavingType.INCOME_PERCENTAGE -> {
+                // 百分比：用户输入的是百分比数（如 25），转万分比
+                val pct = state.forcedSavingText.toDoubleOrNull() ?: 0.0
+                (pct * 100).toLong()
+            }
+            else -> 0L
+        }
+        return ForcedSavingParams(type = state.forcedSavingType, value = value)
     }
 
     private fun buildTransaction(state: TransactionFormState): Transaction {
@@ -256,7 +326,7 @@ class TransactionEditViewModel @Inject constructor(
             settingsStore.setLastAccountId(tx.accountId)
             tx.categoryId?.let { settingsStore.setLastCategoryId(it) }
             widgetUpdater.refresh()
-            _state.update { it.copy(saved = true, showSalaryConfirm = false) }
+            _state.update { it.copy(saved = true, showSalaryConfirm = false, showOverBudgetWarning = false) }
         } catch (e: NoRunningCycleException) {
             _state.update {
                 it.copy(

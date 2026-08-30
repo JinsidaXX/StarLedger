@@ -8,6 +8,7 @@ import com.starledger.app.core.model.CycleMode
 import com.starledger.app.core.model.CycleStatus
 import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.TimeUtil
+import com.starledger.app.core.saving.ForcedSavingParams
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -79,11 +80,13 @@ class CycleService @Inject constructor(
      * 默认周期结束日期为「下个月同一天」（月末自动回退，如 1/31 → 2/28）。
      * 周期不随日期自动闭合，运行超过 maxRunDays 仅告警，不强制关闭。
      * 预发工资场景：规划消费预算可延迟到 [effectStartTime] 解锁，null 表示立即生效。
+     * [forcedSaving] 随主薪资下发设置的强制存储参数。
      */
     suspend fun startRollingCycle(
         salaryDate: Long,
         maxRunDays: Int,
         effectStartTime: Long? = null,
+        forcedSaving: ForcedSavingParams = ForcedSavingParams(),
     ): BudgetCycle {
         // 下个月同一天的结束时刻（含当天）
         val endDate = TimeUtil.toEpochMillis(
@@ -99,6 +102,9 @@ class CycleService @Inject constructor(
             cycleMode = CycleMode.ROLLING_SALARY,
             maxRunDays = maxRunDays,
             effectStartTime = effectStartTime,
+            forcedSavingType = forcedSaving.type,
+            forcedSavingValue = forcedSaving.value,
+            forcedSavingAmount = forcedSaving.amount(salaryDate),
         )
         val id = cycleDao.insert(cycle)
         return cycle.copy(id = id)
@@ -134,10 +140,11 @@ class CycleService @Inject constructor(
         salaryDate: Long,
         maxRunDays: Int,
         effectStartTime: Long? = null,
+        forcedSaving: ForcedSavingParams = ForcedSavingParams(),
     ): CycleSettlement? {
         val old = getRunningCycle()
         val settlement = old?.let { settle(it, CycleCloseReason.CONFIRMED_SALARY) }
-        startRollingCycle(salaryDate, maxRunDays, effectStartTime)
+        startRollingCycle(salaryDate, maxRunDays, effectStartTime, forcedSaving)
         return settlement
     }
 }

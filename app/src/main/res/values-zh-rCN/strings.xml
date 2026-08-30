@@ -357,4 +357,16 @@
 
     <!-- 小组件 Widget -->
     <string name="widget_description">星图账本 · 本周期概览</string>
+
+    <!-- 强制存储 Forced Saving -->
+    <string name="forced_saving_none">不设置</string>
+    <string name="forced_saving_fixed">固定金额</string>
+    <string name="forced_saving_percent">收入百分比</string>
+    <string name="forced_saving_title">强制存储</string>
+    <string name="forced_saving_value">金额（元）</string>
+    <string name="forced_saving_percent_value">百分比（%）</string>
+    <string name="category_is_medical">医疗支出（不占可用支出额度）</string>
+
+    <!-- 超支提示 Over budget -->
+    <string name="over_budget_warning">这笔支出超过可用支出，将动用到强制存储（至少保留原定 90%）。确定继续？</string>
 </resources>

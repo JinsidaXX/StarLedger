@@ -357,4 +357,16 @@
 
     <!-- 小组件 Widget -->
     <string name="widget_description">StarLedger · current cycle overview</string>
+
+    <!-- 强制存储 Forced Saving -->
+    <string name="forced_saving_none">None</string>
+    <string name="forced_saving_fixed">Fixed amount</string>
+    <string name="forced_saving_percent">% of income</string>
+    <string name="forced_saving_title">Forced Saving</string>
+    <string name="forced_saving_value">Amount (¥)</string>
+    <string name="forced_saving_percent_value">Percentage (%)</string>
+    <string name="category_is_medical">Medical expense (exempt from spending limit)</string>
+
+    <!-- 超支提示 Over budget -->
+    <string name="over_budget_warning">This expense exceeds your available spending and will reduce forced saving (kept at least 90% of target). Continue?</string>
 </resources>

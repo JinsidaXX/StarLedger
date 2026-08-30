@@ -41,24 +41,29 @@ private val AccentBlue = Color(0xFF86A8FF)
 private val PositiveGreen = Color(0xFF58D6A9)
 private val SurplusGold = Color(0xFFF6D477)
 
-/** 星图账本小组件：当前周期收入 / 支出 / 可用支出 / 结余 */
-class StarLedgerWidget : GlanceAppWidget() {
-
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val summary = loadSummary(context)
-        provideContent {
-            StarLedgerWidgetContent(summary)
-        }
+private suspend fun loadSummary(context: Context): WidgetSummary =
+    withContext(Dispatchers.IO) {
+        val entryPoint = EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            WidgetEntryPoint::class.java,
+        )
+        entryPoint.widgetDataProvider().currentSummary()
     }
 
-    private suspend fun loadSummary(context: Context): WidgetSummary =
-        withContext(Dispatchers.IO) {
-            val entryPoint = EntryPointAccessors.fromApplication(
-                context.applicationContext,
-                WidgetEntryPoint::class.java,
-            )
-            entryPoint.widgetDataProvider().currentSummary()
-        }
+/** 星图账本小组件（4×2）：收入 / 支出 / 可用支出 / 结余 */
+class StarLedgerWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val summary = loadSummary(context)
+        provideContent { StarLedgerWidgetContent(summary) }
+    }
+}
+
+/** 星图账本小组件（2×2）：收入 / 支出 / 可用支出 */
+class StarLedgerSmallWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val summary = loadSummary(context)
+        provideContent { StarLedgerSmallWidgetContent(summary) }
+    }
 }
 
 @Composable
@@ -71,24 +76,7 @@ private fun StarLedgerWidgetContent(summary: WidgetSummary) {
             .clickable(actionStartActivity(MainActivity::class.java))
             .padding(16.dp),
     ) {
-        Row(
-            modifier = GlanceModifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = "星图账本",
-                style = TextStyle(
-                    color = ColorProvider(TextPrimary),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-            )
-            Spacer(modifier = GlanceModifier.width(8.dp))
-            Text(
-                text = "本期",
-                style = TextStyle(color = ColorProvider(TextSecondary), fontSize = 12.sp),
-            )
-        }
+        HeaderRow()
 
         Spacer(modifier = GlanceModifier.height(14.dp))
 
@@ -103,6 +91,52 @@ private fun StarLedgerWidgetContent(summary: WidgetSummary) {
             MetricItem("可用支出", Money.format(summary.available), AccentBlue, GlanceModifier.defaultWeight())
             MetricItem("结余", Money.format(summary.surplus), SurplusGold, GlanceModifier.defaultWeight())
         }
+    }
+}
+
+@Composable
+private fun StarLedgerSmallWidgetContent(summary: WidgetSummary) {
+    Column(
+        modifier = GlanceModifier
+            .fillMaxWidth()
+            .background(SpaceBackground)
+            .cornerRadius(20.dp)
+            .clickable(actionStartActivity(MainActivity::class.java))
+            .padding(14.dp),
+    ) {
+        HeaderRow()
+
+        Spacer(modifier = GlanceModifier.height(12.dp))
+
+        Column(modifier = GlanceModifier.fillMaxWidth()) {
+            MetricItem("收入", Money.format(summary.income), PositiveGreen)
+            Spacer(modifier = GlanceModifier.height(8.dp))
+            MetricItem("支出", Money.format(summary.expense), TextPrimary)
+            Spacer(modifier = GlanceModifier.height(8.dp))
+            MetricItem("可用支出", Money.format(summary.available), AccentBlue)
+        }
+    }
+}
+
+@Composable
+private fun HeaderRow() {
+    Row(
+        modifier = GlanceModifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "星图账本",
+            style = TextStyle(
+                color = ColorProvider(TextPrimary),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+            ),
+        )
+        Spacer(modifier = GlanceModifier.width(8.dp))
+        Text(
+            text = "本期",
+            style = TextStyle(color = ColorProvider(TextSecondary), fontSize = 12.sp),
+        )
     }
 }
 
@@ -130,7 +164,12 @@ private fun MetricItem(
     }
 }
 
-/** 小组件接收器 */
+/** 4×2 小组件接收器 */
 class StarLedgerWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = StarLedgerWidget()
+}
+
+/** 2×2 小组件接收器 */
+class StarLedgerSmallWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = StarLedgerSmallWidget()
 }

@@ -30,6 +30,12 @@ data class BudgetCycle(
     val maxRunDays: Int = 50,
     /** 预算延迟生效时间：预发工资时，规划消费预算延迟到该时间解锁；null 表示立即生效 */
     val effectStartTime: Long? = null,
+    /** 强制存储类型（随主薪资下发设置） */
+    val forcedSavingType: ForcedSavingType = ForcedSavingType.NONE,
+    /** 强制存储参数：固定金额时为分；百分比时为万分比（2500 = 25%） */
+    val forcedSavingValue: Long = 0,
+    /** 本周期强制存储的目标金额（分），由收入 × 参数计算得出 */
+    val forcedSavingAmount: Long = 0,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 )

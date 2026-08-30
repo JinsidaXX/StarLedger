@@ -74,6 +74,7 @@ private class FakeTransactionDao : TransactionDao {
     override suspend fun getByPlan(planId: Long): com.starledger.app.core.model.Transaction? = null
     override suspend fun countActiveDays(start: Long, end: Long): Int = 0
     override suspend fun getAll(): List<com.starledger.app.core.model.Transaction> = emptyList()
+    override suspend fun sumNonMedicalExpense(start: Long, end: Long): Long = expense
 }
 
 class CycleServiceTest {

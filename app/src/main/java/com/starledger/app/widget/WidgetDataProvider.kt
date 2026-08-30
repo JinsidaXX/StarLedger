@@ -1,16 +1,15 @@
 package com.starledger.app.widget
 
 import com.starledger.app.core.allocation.AllocationRepository
-import com.starledger.app.core.budget.BudgetCalculator
 import com.starledger.app.core.database.dao.TransactionDao
-import com.starledger.app.core.ledger.LedgerRepository
 import com.starledger.app.core.model.BudgetCycle
 import com.starledger.app.core.model.CycleStatus
 import com.starledger.app.core.model.TxType
+import com.starledger.app.core.saving.ForcedSavingCalculator
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** 小组件四指标：收入、支出、可用支出、结余 */
+/** 小组件汇总指标：收入、支出、可用支出、结余 */
 data class WidgetSummary(
     val income: Long,
     val expense: Long,
@@ -20,12 +19,16 @@ data class WidgetSummary(
 
 /**
  * 小组件数据查询：计算当前周期（或最近周期）的四项汇总指标。
- * 收入/支出来自交易流水；可用支出复用 BudgetCalculator；结余 = 收入 - 支出（非负）。
+ *
+ * 口径（含强制存储）：
+ * - 收入 = 本期收入
+ * - 支出 = 本期全部支出
+ * - 可用支出 = 收入 - 强制存储 - 非医疗支出（可为负）
+ * - 结余 = 强制存储实际 + 可用支出
  */
 @Singleton
 class WidgetDataProvider @Inject constructor(
     private val allocationRepository: AllocationRepository,
-    private val ledgerRepository: LedgerRepository,
     private val transactionDao: TransactionDao,
 ) {
 
@@ -37,14 +40,13 @@ class WidgetDataProvider @Inject constructor(
             it.type == TxType.INCOME || it.type == TxType.REFUND || it.type == TxType.REIMBURSEMENT
         }.sumOf { it.amount }
         val expense = txs.filter { it.type == TxType.EXPENSE }.sumOf { it.amount }
-        val envelopes = allocationRepository.getEnvelopes(cycle.id)
-        val available = BudgetCalculator.safeToSpend(envelopes)
-        val surplus = (income - expense).coerceAtLeast(0)
+        val nonMedical = transactionDao.sumNonMedicalExpense(cycle.startDate, cycle.endDate)
+        val result = ForcedSavingCalculator.compute(cycle, income, nonMedical)
         return WidgetSummary(
             income = income,
             expense = expense,
-            available = available,
-            surplus = surplus,
+            available = result.availableSpending,
+            surplus = result.surplus,
         )
     }
 

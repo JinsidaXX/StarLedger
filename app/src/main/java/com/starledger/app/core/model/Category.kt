@@ -11,6 +11,8 @@ data class Category(
     val icon: String = "📦",
     val color: Long = 0xFF86A8FF,
     val isExpense: Boolean = true,
+    /** 医疗类支出不占用「可用支出」额度 */
+    val isMedical: Boolean = false,
     val sortOrder: Int = 0,
     val createdAt: Long = System.currentTimeMillis(),
 )

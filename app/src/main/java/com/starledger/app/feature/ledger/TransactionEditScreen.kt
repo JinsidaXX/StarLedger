@@ -64,6 +64,7 @@ import com.starledger.app.core.design.theme.toArgbLong
 import com.starledger.app.core.design.theme.toColor
 import com.starledger.app.core.model.Account
 import com.starledger.app.core.model.Category
+import com.starledger.app.core.model.ForcedSavingType
 import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.TimeUtil
 import com.starledger.app.core.model.TxType
@@ -354,10 +355,60 @@ fun TransactionEditScreen(
             containerColor = SpaceBackground,
             title = { Text(stringResource(R.string.salary_confirm_title), color = TextPrimary) },
             text = {
-                Text(
-                    stringResource(R.string.salary_confirm_message, state.salaryRunningDays),
-                    color = TextSecondary,
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        stringResource(R.string.salary_confirm_message, state.salaryRunningDays),
+                        color = TextSecondary,
+                    )
+                    // 强制存储设置
+                    Text(
+                        stringResource(R.string.forced_saving_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = TextPrimary,
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ForcedSavingType.entries.forEach { type ->
+                            val selected = state.forcedSavingType == type
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(if (selected) AccentBlue.copy(alpha = 0.25f) else SurfaceSecondary)
+                                    .clickable { viewModel.setForcedSavingType(type) }
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                            ) {
+                                Text(
+                                    stringResource(type.labelResId),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = if (selected) AccentBlue else TextSecondary,
+                                )
+                            }
+                        }
+                    }
+                    if (state.forcedSavingType == ForcedSavingType.FIXED_AMOUNT) {
+                        OutlinedTextField(
+                            value = state.forcedSavingText,
+                            onValueChange = { viewModel.setForcedSavingText(it) },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text(stringResource(R.string.forced_saving_value)) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = fieldColors(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        )
+                    }
+                    if (state.forcedSavingType == ForcedSavingType.INCOME_PERCENTAGE) {
+                        OutlinedTextField(
+                            value = state.forcedSavingText,
+                            onValueChange = { viewModel.setForcedSavingText(it) },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text(stringResource(R.string.forced_saving_percent_value)) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = fieldColors(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        )
+                    }
+                }
             },
             confirmButton = {
                 TextButton(onClick = { viewModel.confirmSalaryNewCycle() }) {
@@ -367,6 +418,29 @@ fun TransactionEditScreen(
             dismissButton = {
                 TextButton(onClick = { viewModel.confirmSalaryAsNormal() }) {
                     Text(stringResource(R.string.salary_confirm_as_normal), color = TextSecondary)
+                }
+            },
+        )
+    }
+    if (state.showOverBudgetWarning) {
+        AlertDialog(
+            onDismissRequest = { viewModel.cancelOverBudget() },
+            containerColor = SpaceBackground,
+            title = { Text(stringResource(R.string.notice), color = TextPrimary) },
+            text = {
+                Text(
+                    stringResource(R.string.over_budget_warning),
+                    color = TextSecondary,
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.confirmOverBudget() }) {
+                    Text(stringResource(R.string.confirm), color = RiskRed)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.cancelOverBudget() }) {
+                    Text(stringResource(R.string.cancel), color = TextSecondary)
                 }
             },
         )

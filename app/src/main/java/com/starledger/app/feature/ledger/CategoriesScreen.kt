@@ -25,6 +25,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -208,6 +210,7 @@ private fun CategoryEditDialog(
     var name by remember(category) { mutableStateOf(category?.name ?: "") }
     var icon by remember(category) { mutableStateOf(category?.icon ?: "📦") }
     var color by remember(category) { mutableStateOf((category?.color ?: 0xFF86A8FF).toColor()) }
+    var isMedical by remember(category) { mutableStateOf(category?.isMedical ?: false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -261,6 +264,22 @@ private fun CategoryEditDialog(
                         }
                     }
                 }
+                // 医疗支出豁免（仅支出分类）
+                if (isExpense) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(stringResource(R.string.category_is_medical), style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
+                        }
+                        Switch(
+                            checked = isMedical,
+                            onCheckedChange = { isMedical = it },
+                            colors = SwitchDefaults.colors(checkedTrackColor = AccentBlue),
+                        )
+                    }
+                }
                 if (category != null) {
                     TextButton(onClick = { onDelete(category) }) {
                         Text(stringResource(R.string.category_delete), color = RiskRed)
@@ -277,6 +296,7 @@ private fun CategoryEditDialog(
                             icon = icon,
                             color = color.toArgbLong(),
                             isExpense = if (category != null) category.isExpense else isExpense,
+                            isMedical = isMedical,
                         )
                     )
                 },

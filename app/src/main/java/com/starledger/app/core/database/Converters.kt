@@ -6,6 +6,7 @@ import com.starledger.app.core.model.CycleCloseReason
 import com.starledger.app.core.model.CycleMode
 import com.starledger.app.core.model.CycleStatus
 import com.starledger.app.core.model.EnvelopeType
+import com.starledger.app.core.model.ForcedSavingType
 import com.starledger.app.core.model.IncomeType
 import com.starledger.app.core.model.PlanStatus
 import com.starledger.app.core.model.RuleType
@@ -51,6 +52,12 @@ class Converters {
 
     @TypeConverter
     fun toIncomeType(value: String?): IncomeType? = value?.let { IncomeType.valueOf(it) }
+
+    @TypeConverter
+    fun fromForcedSavingType(value: ForcedSavingType): String = value.name
+
+    @TypeConverter
+    fun toForcedSavingType(value: String): ForcedSavingType = ForcedSavingType.valueOf(value)
 
     @TypeConverter
     fun fromRuleType(value: RuleType): String = value.name
