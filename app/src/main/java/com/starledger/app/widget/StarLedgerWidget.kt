@@ -100,21 +100,62 @@ private fun StarLedgerSmallWidgetContent(summary: WidgetSummary) {
         modifier = GlanceModifier
             .fillMaxWidth()
             .background(SpaceBackground)
-            .cornerRadius(20.dp)
+            .cornerRadius(16.dp)
             .clickable(actionStartActivity(MainActivity::class.java))
-            .padding(14.dp),
+            .padding(horizontal = 12.dp, vertical = 10.dp),
     ) {
-        HeaderRow()
+        Row(
+            modifier = GlanceModifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "星图账本 · 本期",
+                style = TextStyle(
+                    color = ColorProvider(TextPrimary),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                maxLines = 1,
+            )
+        }
 
-        Spacer(modifier = GlanceModifier.height(12.dp))
+        Spacer(modifier = GlanceModifier.height(6.dp))
 
         Column(modifier = GlanceModifier.fillMaxWidth()) {
-            MetricItem("收入", Money.format(summary.income), PositiveGreen)
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            MetricItem("支出", Money.format(summary.expense), TextPrimary)
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            MetricItem("可用支出", Money.format(summary.available), AccentBlue)
+            SmallMetricItem("收入", Money.format(summary.income), PositiveGreen)
+            Spacer(modifier = GlanceModifier.height(4.dp))
+            SmallMetricItem("支出", Money.format(summary.expense), TextPrimary)
+            Spacer(modifier = GlanceModifier.height(4.dp))
+            SmallMetricItem("可用支出", Money.format(summary.available), AccentBlue)
         }
+    }
+}
+
+@Composable
+private fun SmallMetricItem(
+    label: String,
+    value: String,
+    color: Color,
+) {
+    Row(
+        modifier = GlanceModifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = TextStyle(color = ColorProvider(TextSecondary), fontSize = 11.sp),
+            maxLines = 1,
+        )
+        Spacer(modifier = GlanceModifier.defaultWeight())
+        Text(
+            text = value,
+            style = TextStyle(
+                color = ColorProvider(color),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+            ),
+            maxLines = 1,
+        )
     }
 }
 
