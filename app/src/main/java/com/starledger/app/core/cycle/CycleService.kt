@@ -76,6 +76,8 @@ class CycleService @Inject constructor(
     /**
      * 开启新的滚动薪资周期。
      * 该笔主薪资作为新周期第一笔收入，新周期 startDate 取薪资交易日期。
+     * 默认周期结束日期为「下个月同一天」（月末自动回退，如 1/31 → 2/28）。
+     * 周期不随日期自动闭合，运行超过 maxRunDays 仅告警，不强制关闭。
      * 预发工资场景：规划消费预算可延迟到 [effectStartTime] 解锁，null 表示立即生效。
      */
     suspend fun startRollingCycle(
@@ -83,12 +85,16 @@ class CycleService @Inject constructor(
         maxRunDays: Int,
         effectStartTime: Long? = null,
     ): BudgetCycle {
+        // 下个月同一天的结束时刻（含当天）
+        val endDate = TimeUtil.toEpochMillis(
+            TimeUtil.toLocalDate(salaryDate).plusMonths(1).plusDays(1)
+        ) - 1
         val cycle = BudgetCycle(
             name = TimeUtil.formatMonth(salaryDate),
             year = TimeUtil.yearMonthOf(salaryDate).year,
             month = TimeUtil.yearMonthOf(salaryDate).monthValue,
             startDate = salaryDate,
-            endDate = salaryDate + maxRunDays * 86_400_000L,
+            endDate = endDate,
             status = CycleStatus.ACTIVE,
             cycleMode = CycleMode.ROLLING_SALARY,
             maxRunDays = maxRunDays,

@@ -190,4 +190,40 @@ class CycleServiceTest {
         assertTrue(service.canRecordExpense(CycleMode.ROLLING_SALARY))
         assertTrue(service.canRecordExpense(CycleMode.CALENDAR_MONTH))
     }
+
+    @Test
+    fun `新周期结束日期为下个月同一天`() = runTest {
+        val cycleDao = FakeCycleDao()
+        val service = service(cycleDao, FakeTransactionDao())
+        val salaryDate = com.starledger.app.core.model.TimeUtil.toEpochMillis(
+            java.time.LocalDate.of(2026, 8, 30)
+        )
+
+        val cycle = service.startRollingCycle(salaryDate, maxRunDays = 50)
+
+        // 结束日期 = 下个月同一天（9/30）当天结束时刻
+        val expectedEnd = com.starledger.app.core.model.TimeUtil.toEpochMillis(
+            java.time.LocalDate.of(2026, 9, 30).plusDays(1)
+        ) - 1
+        assertEquals(expectedEnd, cycle.endDate)
+        assertEquals(salaryDate, cycle.startDate)
+        assertEquals(50, cycle.maxRunDays)
+    }
+
+    @Test
+    fun `月末发薪结束日期自动回退到小月最后一天`() = runTest {
+        val cycleDao = FakeCycleDao()
+        val service = service(cycleDao, FakeTransactionDao())
+        // 1/31 发薪 → 下个月同一天应回退到 2/28（2026 非闰年）
+        val salaryDate = com.starledger.app.core.model.TimeUtil.toEpochMillis(
+            java.time.LocalDate.of(2026, 1, 31)
+        )
+
+        val cycle = service.startRollingCycle(salaryDate, maxRunDays = 50)
+
+        val expectedEnd = com.starledger.app.core.model.TimeUtil.toEpochMillis(
+            java.time.LocalDate.of(2026, 2, 28).plusDays(1)
+        ) - 1
+        assertEquals(expectedEnd, cycle.endDate)
+    }
 }
