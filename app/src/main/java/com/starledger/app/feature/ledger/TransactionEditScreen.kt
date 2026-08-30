@@ -210,12 +210,11 @@ fun TransactionEditScreen(
                 )
             }
 
-            // 分类
-            if (state.type != TxType.TRANSFER) {
+            // 分类（收入不需要分类，仅保留收入类型）
+            if (state.type != TxType.TRANSFER && state.type != TxType.INCOME) {
                 item {
                     val visibleCategories = state.categories.filter {
-                        val incomeLike = state.type == TxType.INCOME ||
-                            state.type == TxType.REFUND ||
+                        val incomeLike = state.type == TxType.REFUND ||
                             state.type == TxType.REIMBURSEMENT
                         if (incomeLike) !it.isExpense else it.isExpense
                     }

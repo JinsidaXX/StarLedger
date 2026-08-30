@@ -169,6 +169,7 @@ class TransactionEditViewModel @Inject constructor(
 
     private fun recomputeCanSave(s: TransactionFormState): Boolean = when (s.type) {
         TxType.TRANSFER -> s.amountCents > 0 && s.accountId != null && s.toAccountId != null && s.accountId != s.toAccountId
+        TxType.INCOME -> s.amountCents > 0 && s.accountId != null
         else -> s.amountCents > 0 && s.accountId != null && s.categoryId != null
     }
 
@@ -235,7 +236,7 @@ class TransactionEditViewModel @Inject constructor(
                 amount = state.amountCents,
                 accountId = state.accountId!!,
                 toAccountId = state.toAccountId,
-                categoryId = state.categoryId,
+                categoryId = if (state.type == TxType.INCOME) null else state.categoryId,
                 date = state.date,
                 merchant = state.merchant.trim(),
                 note = state.note.trim(),

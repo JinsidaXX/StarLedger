@@ -322,7 +322,7 @@
 
     <!-- 收入类型 enum IncomeType -->
     <string name="income_type_primary_salary">主薪资</string>
-    <string name="income_type_bonus">奖金</string>
+    <string name="income_type_red_packet">红包转账</string>
     <string name="income_type_part_time">兼职收入</string>
     <string name="income_type_other">其他收入</string>
 

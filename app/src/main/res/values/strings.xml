@@ -322,7 +322,7 @@
 
     <!-- Income type enum IncomeType -->
     <string name="income_type_primary_salary">Primary Salary</string>
-    <string name="income_type_bonus">Bonus</string>
+    <string name="income_type_red_packet">Red Packet Transfer</string>
     <string name="income_type_part_time">Part-time</string>
     <string name="income_type_other">Other Income</string>
 

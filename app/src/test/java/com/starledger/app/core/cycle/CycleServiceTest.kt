@@ -158,7 +158,7 @@ class CycleServiceTest {
         )
         // 非主薪资不触发
         assertFalse(
-            service.shouldConfirmPrimarySalary(IncomeType.BONUS, CycleMode.ROLLING_SALARY)
+            service.shouldConfirmPrimarySalary(IncomeType.RED_PACKET, CycleMode.ROLLING_SALARY)
         )
     }
 
